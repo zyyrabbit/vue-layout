@@ -1,0 +1,35 @@
+.page-view {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  height: 100%;
+  background-color: $leaf-primary-color-white;
+  overflow: hidden;
+
+  &__content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    transition: all 0.3s ease;
+    float: left;
+
+    &-main {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      top: $leaf-header-height;
+      left: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      .spin {
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%) scale(1.2);
+      }
+    }
+  }
+}

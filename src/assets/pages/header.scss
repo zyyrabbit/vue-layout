@@ -1,0 +1,118 @@
+.header-wrapper {
+  position: relative;
+  z-index: 1000;
+  height: $leaf-header-height;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+
+  &__left {
+    float: left;
+    height: $leaf-header-height;
+    padding-left: 10px;
+    line-height: 50px;
+    overflow: hidden;
+    background-color: $leaf-aside-menu-bg-color;
+    color: #fff;
+    font-size: 0;
+    cursor: pointer;
+  
+    &--brand-text {
+      display: inline-block;
+      margin-left: 12px;
+      font-size: 14px;
+      vertical-align: middle;
+      transition: all 0.1s ease;
+    }
+  
+    &--brand-btn {
+      display: none;
+    }
+  }
+
+  
+.header-wrapper__right {
+    float: right;
+    height: $leaf-header-height;
+    line-height: $leaf-header-height;
+
+    .item-group {
+      display: inline-block;
+
+      &::before {
+        content: '';
+        display: inline-block;
+        width: 1px;
+        height: 25px;
+        background: #202020;
+        vertical-align: middle;
+      }
+    }
+
+    .item {
+      cursor: pointer;
+      padding: 0 5px;
+      display: inline-block;
+      height: 100%;
+      vertical-align: middle;
+      svg {
+        opacity: 0.65;
+        fill: #fff;
+        height: 16px;
+        vertical-align: middle;
+      }
+
+      &.menu-hover {
+        &:hover {
+          .el-dropdown-link {
+            color: $leaf-primary-color;
+          }
+        }
+      }
+
+      .icon-hover {
+        display: inline-block;
+        width: 30px;
+        line-height: 30px;
+        text-align: center;
+        cursor: pointer;
+
+        &:hover {
+          border-radius: 50%;
+          background: #404040;
+        }
+      }
+     
+      @include vertical-middle;
+    }
+
+    .drop-name {
+      height: 50px;
+    }
+
+    .el-dropdown-link {
+      display: inline-block;
+      min-width: 30px;
+      line-height: 22px;
+      font-size: 12px;
+      color: #ffffff;
+      cursor: pointer;
+    }
+    
+    ::v-deep {
+      .el-badge__content {
+        top: 15px;
+        right: 15px;
+        background: $leaf-color-badge;
+      }
+
+      .el-badge {
+        vertical-align: inherit;
+      }
+    }
+  }
+}
+.el-dropdown-item {
+  width: 25px !important;
+  height: 25px  !important;
+  margin-top: 5px;
+  border-radius: 5px;
+}

@@ -1,0 +1,65 @@
+// font
+$leaf-font-12: 12px !default;
+$leaf-font-14: 14px !default;
+$leaf-font-18: 18px !default;
+$leaf-font-20: 20px !default;
+$leaf-font-28: 28px !default;
+$leaf-font-36: 36px !default;
+$leaf-font-48: 48px !default;
+
+// Site Color
+$leaf-color-success: #3CCEB5 !default;
+$leaf-color-warning: #FF9D3B !default;
+$leaf-color-error: #FF6060 !default;
+$leaf-color-link: #73819F !default;
+$leaf-color-badge: #FF4948 !default;
+$leaf-color-brand: #3D6EFF !default;
+
+$leaf-primary-color-white: #FFFFFF;
+$leaf-primary-color:#000000 !default;
+$leaf-primary-color-secondary: rgba(255, 255, 255, 0.6) !default;
+$leaf-primary-color-weak:rgba(255, 255, 255, 0.38) !default;
+$leaf-primary-color-mask-dark:rgba(255, 255, 255, 0.28) !default;
+$leaf-primary-color-disable:rgba(255, 255, 255, 0.28) !default;
+$leaf-primary-color-border:rgba(0, 0, 0, 0.12) !default;
+
+$leaf-primary-color-line: rgba(0, 0, 0, 0.1) !default;
+$leaf-primary-color-table-header:rgba(255, 255, 255, 0.03) !default;
+$leaf-primary-color-highlighted:#ffffff !default;
+$leaf-primary-color-basefill:#ffffff !default;
+$leaf-primary-color-background:#f5f5f5 !default;
+$leaf-primary-color:#4CA7FB !default;
+
+// zIndex
+$leaf-zIndex-1000: 1000 !default;
+$leaf-zIndex-1001: 1001 !default;
+$leaf-zIndex-1010: 1010 !default;
+$leaf-zIndex-1011: 1011 !default;
+$leaf-zIndex-2002: 2002 !default;
+
+
+// body
+$leaf-body-text-color: #333 !default;
+$leaf-body-bg-color: #f8f8f8 !default;
+
+
+// header
+$leaf-header-height: 50px !default;
+
+// aside
+$leaf-aside-menu-bg-color:#2C2E48 !default;
+$leaf-aside-menu-width: 165px !default;
+$leaf-aside-menu-collapse-width: 60px !default;
+$leaf-aside-menu-width: 165px !default;
+
+// layout-page-view
+
+
+// index
+$leaf-border-radius: 4px !default;
+
+
+:export {
+  theme: $leaf-aside-menu-bg-color;
+}
+
