@@ -1,6 +1,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { VNode } from 'vue';
+import { renderHanlder } from '@/utils';
 
 @Component({
   functional: true,
@@ -12,10 +13,8 @@ export default class ComponentRender extends Vue {
   render(h: typeof Vue.prototype.$createElement, context: any): VNode {
     let { props, data, children } = context;
     let config = props.config;
-
     // 深度复制
-    let configCopy = JSON.parse(JSON.stringify(config));
-    
+    let configCopy =  _.cloneDeep(config);
     // todo --- 抽取函数出来
     if (configCopy.props) {
       data.props = configCopy.props;
@@ -26,6 +25,17 @@ export default class ComponentRender extends Vue {
         ...data.attrs,
         ...configCopy.attrs
       }
+    }
+
+    if (configCopy.nativeOn) {
+      data.nativeOn = {
+        ...data.nativeOn,
+        ...configCopy.nativeOn
+      }
+    }
+
+    if (configCopy.children) {
+      children = renderHanlder(h, configCopy.children);
     }
 
     return h(config.name, data , children);

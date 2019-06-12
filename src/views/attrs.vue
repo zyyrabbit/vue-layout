@@ -7,7 +7,7 @@
           v-for="(value, name) in selectConfig.props" 
           :key="name" 
           :label="name">
-          <el-input v-model="selectConfig.props[name]"></el-input>
+          <el-input v-model.number="selectConfig.props[name]"></el-input>
         </el-form-item>
       </el-form>
     </el-col>
@@ -15,8 +15,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
-import { Getter, Action } from 'vuex-class';
-import { objForEach }  from '@/utils/common.ts';
+import { objForEach } from  '@/utils';
 
 @Component
 export default class Attrs extends Vue {

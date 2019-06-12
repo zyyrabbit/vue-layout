@@ -1,21 +1,20 @@
 <template>
   <el-row type="flex" justify="center" class="leaf-components">
     <el-col :span="20">
-      <component-render
-        v-for="config in configs"
-        :key="config.name"
-        :config="config"
-        class="leaf-components__item"
-        draggable="true"
-        @dragstart.native="dragStart($event, config)"
-      ></component-render>
+      <div v-for="config in configs" :key="config.name"  class="leaf-components__item">
+        <h3 class="leaf-components__item--title">{{config.name}}</h3>
+        <component-render
+          :config="config"
+          draggable="true"
+          @dragstart.native="dragStart($event, config)">
+       </component-render>
+      </div>
     </el-col>
   </el-row>
 </template>
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { Getter, Action } from 'vuex-class';
-import configs from '@/utils/componentConfig.ts';
+import { configs } from '@/utils';
 import ComponentRender from './render.vue';
 @Component({
   components: {
@@ -37,8 +36,12 @@ export default class Components extends Vue {
     padding: 20px 0;
     border-right: 1px solid #ccc;
     height: 100%;
+    overflow-y: auto;
     background-color: #eee;
     &__item {
+      &--title {
+        line-height: 40px;
+      }
       margin-top: 20px;
     }
   }

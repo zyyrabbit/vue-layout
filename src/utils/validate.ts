@@ -5,7 +5,7 @@ export type Reg = { [index: string]: RegExp };
  * @export
  * @class Validate
  */
-export default class Validate {
+export class Validate {
   // 内置正则表达式
   public static readonly nativeRegs: Reg = {
     url: /^((f|ht){1}(tp|tps):\/\/)?([\w-]+\.)+[\w-]+(\/[\w- ./?%&=]*)?/,

@@ -7,8 +7,7 @@
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { Getter, Action } from 'vuex-class';
-import { objForEach }  from '@/utils/common.ts';
+import { recursiveTraverse }  from '@/utils';
 import pretty from 'pretty';
 
 @Component
@@ -17,27 +16,10 @@ export default class CodeTree extends Vue {
   private configs!: any;
 
   get templateStr() {
-    let content = '<template>';
-    this.configs.forEach((config: any) => {
-        let { name, attrs, props } = config;
-        let attrsStr = attrs ? this.genPropsOrAttrsStr(attrs, 'attrs') : '';
-        let propsStr = props ?  this.genPropsOrAttrsStr(props, 'props') : '';
-        content += `<${name} ${propsStr} ${attrsStr}></${name}>`
-    });
-    content += '\n</template>';
-    return pretty(content);
-  }
-
-  private genPropsOrAttrsStr(obj: any, type: 'attrs' | 'props') {
-    let str = '';
-    objForEach(obj, (key, value) => {
-      if (type === 'attrs') {
-        str += `${key}="${value}"`
-      } else {
-        str += `:${key}="${value}"`
-      }
-    })
-    return str;
+    let templateStr = '<template><div class="template">';
+    templateStr += recursiveTraverse(this.configs);
+    templateStr += '</div></template>';
+    return pretty(templateStr);
   }
 }
 </script>

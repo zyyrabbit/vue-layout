@@ -5,3 +5,52 @@
 .el-color-picker {
   vertical-align: middle;
 }
+
+// 布局
+.el-header, .el-footer {
+  background-color: #B3C0D1;
+  color: #333;
+  text-align: center;
+  line-height: 60px;
+  min-height: 60px;
+}
+
+.el-aside {
+  background-color: rgb(37, 101, 175);
+  color: #333;
+  text-align: center;
+  line-height: 60px;
+  min-height: 60px;
+}
+
+.el-main {
+  background-color: #E9EEF3;
+  color: #333;
+  text-align: center;
+  line-height: 160px;
+  min-height: 60px;
+}
+.el-container {
+  flex-direction: column!important;
+  padding: 40px!important;
+}
+
+// 处理 el-row, el-col
+@mixin row-col {
+  background-color: #fff;
+  border: 2px darkgrey dotted;
+  border-radius: 4px;
+  padding: 20px 0;
+}
+.leaf-components__item, .leaf-container__left-content {
+  .el-row, .el-col, .el-container {
+    @include row-col;
+  }
+}
+
+.leaf-container__left-content {
+  .el-row, .el-col, .el-container {
+    padding: 30px 0;
+  }
+}
+

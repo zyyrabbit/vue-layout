@@ -10,7 +10,6 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { Getter, Action } from 'vuex-class';
 import components from './components.vue';
 import container from './container.vue';
 

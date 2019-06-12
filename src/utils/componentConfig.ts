@@ -1,35 +1,84 @@
-
-interface ComponentConfig {
+export interface IComponentConfig {
   name: string,
   props?: object,
-  attrs?: object
+  attrs?: object,
+  children?: IComponentConfig[],
+  droppable?: boolean
 }
 
-const configs: ComponentConfig[] = [
+const layoutComNames = ['el-container', 'el-header', 'el-main', 'el-footer'].map((name: string) => {
+  return {
+    name,
+    droppable: true,
+    children: []
+  }
+})
+const layout: IComponentConfig[] = [
+ /*  ...layoutComNames,
   {
-    name:  'el-row'
+    name:  'el-aside',
+    droppable: true,
+    props: {
+      width: '20%',
+    },
+    children: []
+  }, */
+  {
+    name:  'el-row',
+    droppable: true,
+    children: []
   },
+  {
+    name:  'el-col',
+    droppable: true,
+    props: {
+      span: 24
+    },
+    children: []
+  },
+  
+]
+
+export const configs: IComponentConfig[] = [
+  ...layout,
   {
     name:  'el-input',
     props: {
-      value: 'a'
+      value: 1,
+      size: '',
+      clearable: false,
+      disabled: false,
     },
     attrs: {
-      a: 'foo'
+      placeholder: '请输入内容'
     }
   },
   {
     name:  'el-select',
     props: {
-      value: 'a'
-    }
+      value: 1
+    },
+    children: [{
+      name: 'el-option',
+      props: {
+        label: '选项',
+        value: 1
+      }
+    },{
+      name: 'el-option',
+      props: {
+        label: '选项',
+        value: 2
+      }
+    }]
   },
   {
     name:  'el-radio',
     props: {
-      value: 'a'
+      value: '单选按钮',
+    },
+    attrs: {
+      label: '单选按钮'
     }
   }
 ]
-
-export default configs;
