@@ -27,7 +27,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import ComponentRender from './render.vue';
+import ComponentRender from './componentRender.vue';
 import CodeTree from './codeTree.vue';
 import attrs from './attrs.vue';
 import { wrapHanlder, breadthTraverse } from '@/utils';

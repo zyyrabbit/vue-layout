@@ -14,7 +14,7 @@ const layoutComNames = ['el-container', 'el-header', 'el-main', 'el-footer'].map
   }
 })
 const layout: IComponentConfig[] = [
- /*  ...layoutComNames,
+  /* ...layoutComNames,
   {
     name:  'el-aside',
     droppable: true,
@@ -26,13 +26,24 @@ const layout: IComponentConfig[] = [
   {
     name:  'el-row',
     droppable: true,
+    props: {
+      gutter: 0,
+      type: 'flex',
+      justify: 'start',
+      align: 'top',
+      tag: 'div',
+    },
     children: []
   },
   {
     name:  'el-col',
     droppable: true,
     props: {
-      span: 24
+      span: 24,
+      offset: 0,
+      push: 0,
+      pull: 0,
+      tag: 'div'
     },
     children: []
   },

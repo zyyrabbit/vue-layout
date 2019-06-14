@@ -2,7 +2,7 @@
   <el-row type="flex" justify="center" class="leaf-components">
     <el-col :span="20">
       <div v-for="config in configs" :key="config.name"  class="leaf-components__item">
-        <h3 class="leaf-components__item--title">{{config.name}}</h3>
+        <h4 class="leaf-components__item--title">{{config.name}}</h4>
         <component-render
           :config="config"
           draggable="true"
@@ -15,7 +15,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { configs } from '@/utils';
-import ComponentRender from './render.vue';
+import ComponentRender from './componentRender.vue';
 @Component({
   components: {
     ComponentRender

@@ -3,7 +3,7 @@
     <div class="header-wrapper__left" :style="{ 'background-color': theme }">
       <div class="header-wrapper__left--brand-img"></div>
       <div class="header-wrapper__left--brand-text">
-        Leaf-Vue-Layout
+        Leaf-Design
       </div>
       <div class="header-wrapper__left--brand-btn" @click.stop="onMobileToggle">
         <svg-icon name="indent"></svg-icon>

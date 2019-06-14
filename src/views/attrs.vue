@@ -4,10 +4,13 @@
       <el-form>
         <el-form-item :label="selectConfig.name"></el-form-item>
         <el-form-item 
-          v-for="(value, name) in selectConfig.props" 
-          :key="name" 
-          :label="name">
-          <el-input v-model.number="selectConfig.props[name]"></el-input>
+          v-for="(value, key) in selectConfig.props" 
+          :key="key" 
+          :label="key">
+           <attr-render 
+            :config="selectConfig" 
+            :obj-key="key"
+            v-model="selectConfig.props[key]"></attr-render>
         </el-form-item>
       </el-form>
     </el-col>
@@ -15,9 +18,15 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
+import Element from 'element-ui';
 import { objForEach } from  '@/utils';
+import AttrRender from './attrRender.vue';
 
-@Component
+@Component({
+  components: {
+    AttrRender
+  }
+})
 export default class Attrs extends Vue {
   @Prop({ default: () => {} })
   private selectConfig!: any;
@@ -29,5 +38,6 @@ export default class Attrs extends Vue {
     border-left: 1px solid #ccc;
     height: 100%;
     background-color: #eee;
+    overflow-y: auto;
   }
 </style>
