@@ -6,6 +6,7 @@ export interface IComponentConfig {
   droppable?: boolean,
   id?: string,
   placeholder?: string,
+  'class'?: string
 }
 
 const layoutComNames = ['el-container', 'el-header', 'el-main', 'el-footer'].map((name: string) => {
@@ -36,6 +37,7 @@ const layout: IComponentConfig[] = [
       align: 'top',
       tag: 'div',
     },
+    
     children: []
   },
   {
@@ -58,6 +60,7 @@ const formElement: IComponentConfig[] = [
   {
     name:  'el-form',
     droppable: true,
+    class: '',
     props: {
       'label-position': 'right',
       model: {},
@@ -77,9 +80,6 @@ const formElement: IComponentConfig[] = [
       'show-message': true,
       'inline-message': false,
     },
-    attrs: {
-      placeholder: '请输入内容'
-    },
     children: []
   },
   {
@@ -91,7 +91,7 @@ const formElement: IComponentConfig[] = [
       disabled: false,
     },
     attrs: {
-      placeholder: '请输入内容'
+      placeholder: '请输入内容',
     }
   },
   {
@@ -125,7 +125,7 @@ const formElement: IComponentConfig[] = [
   {
     name:  'el-button',
     attrs: {
-      type: 'primary'
+      type: 'primary',
     },
     children: ['按钮'] // 待解决ts检查报错
   }

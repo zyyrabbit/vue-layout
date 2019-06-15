@@ -1,6 +1,7 @@
 <template>
   <el-row type="flex" justify="center" class="leaf-components">
     <el-col :span="20">
+      <h3 class="leaf-components--title">组件列表</h3>
       <div v-for="config in configs" :key="config.name"  class="leaf-components__item">
         <h4 class="leaf-components__item--title">{{config.name}}</h4>
         <component-render
@@ -33,11 +34,13 @@ export default class Components extends Vue {
 </script>
 <style lang="scss">
   .leaf-components {
-    padding: 20px 0;
     border-right: 1px solid #ccc;
     height: 100%;
     overflow-y: auto;
     background-color: #eee;
+    &--title {
+      padding-top: 20px;
+    }
     &__item {
       &--title {
         line-height: 40px;

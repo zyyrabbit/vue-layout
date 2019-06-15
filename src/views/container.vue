@@ -1,5 +1,5 @@
 <template>
-  <el-row class="leaf-container">
+  <el-row class="leaf-container" id="leaf-container">
     <el-col
       :span="19"
       @dragenter.native.stop="dragenter"
@@ -9,19 +9,41 @@
       @click.native.stop="selectComponet"
       @contextmenu.native.stop="rightClick"
       class="leaf-container__left">
-      <div class="leaf-container__left-tools">
-        <el-button type="text" @click="action">预览代码</el-button>
+      <div class="leaf-container__tools">
+        <el-button type="text" @click="action('design')">
+          页面设计
+        </el-button>
+        <el-button type="text" @click="action('code')">
+          预览代码
+        </el-button>
+        <el-button type="text" @click="action('style')">
+          编辑样式
+        </el-button>
       </div>
-      <div v-if="showType === 'design'" class="leaf-container__left-content">
+      <div v-if="showType === 'design'" class="leaf-container__content">
         <component-render
           v-for="config in configs"
           :key="config.id"
           :config="config"
           @focus.stop="selectComponet"> <!-- 用于处理el-select中，阻止click事件冒泡 -->
         </component-render>
+        <span v-if="configs.length === 0" class="leaf-container__content--intro">
+          请拖拽组件进来
+        </span>
       </div>
-      <div v-if="showType === 'code'">
-        <code-tree :configs="configs"></code-tree>
+      <code-tree 
+        v-else-if="showType === 'code'"
+        :css="css"
+        :configs="configs" 
+        class="leaf-container__code"></code-tree>
+      <div v-else class="leaf-container__style">
+        <el-input
+          type="textarea"
+          @blur="addUserStyle"
+          :autosize="{ minRows: 20, maxRows: 100 }"
+          placeholder=".leaf-designer{ ... }"
+          v-model="css">
+        </el-input>
       </div>
     </el-col>
     <el-col :span="5" class="leaf-container__right">
@@ -51,10 +73,30 @@ export default class Container extends Vue {
   private configs: any[] = [];
 
   private showType: string = 'design';
-  private selectConfig: any = {};
+  private selectConfig: any = null;
+  private css: string = '';
 
-  private action() {
-    this.showType = this.showType === 'design' ? 'code' : 'design';
+  get isShowLayout() {
+    return this.showType === 'design';
+  }
+  private action(showType: 'design' | 'code' | 'style') {
+    this.showType = showType;
+  }
+
+  private addUserStyle() {
+    if (!this.css) return;
+    let style = document.getElementById('custom-layout');
+    if (!style) {
+      style = document.createElement('style');
+      style.id = 'custom-layout';
+      style.setAttribute('scoped', '');
+      style.type = 'text/css';
+      let container = document.getElementById('leaf-container');
+      container.appendChild(style);
+    }
+    let cssText = document.createTextNode(this.css);
+    style.innerHTML = '';
+    style.appendChild(cssText);
   }
 
   private selectComponet(e: MouseEvent) {
@@ -68,8 +110,8 @@ export default class Container extends Vue {
     let configId = this.getSelectConfigId(e);
     if (!configId) return;
     deleteComp(this.configs, configId);
-    if (configId === this.selectConfig.id) {
-      this.selectConfig = {}
+    if (this.selectConfig && configId === this.selectConfig.id) {
+      this.selectConfig = null;
     }
   }
 
@@ -91,7 +133,6 @@ export default class Container extends Vue {
     el.classList.remove('drag-over');
     if (this.showType === 'code') return;
     let config = wrapHanlder(e);
-
     this.configs.push(config);
   }
 
@@ -115,12 +156,58 @@ export default class Container extends Vue {
     height: 100%;
     &__left, &__right {
       height: 100%;
+      position: relative;
     }
 
-    &__left-tools {
-      padding: 10px;
+    &__tools {
+      padding: 0 10px;
+      height: 50px;
+      line-height: 50px;
       background-color:#eee;
       border-bottom: 1px solid #ddd;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 3000;
+      text-align: right;
+      font-size: 20px;
+    }
+
+    &__content, &__code, &__style {
+      height: 100%;
+      overflow-y: auto;
+      
+    }
+
+    &__content, &__style {
+      padding-top: 50px;
+    }
+
+    &__content {
+      display: inline-block;
+      width: 100%;
+      text-align: center;
+      vertical-align: middle;
+      &--intro {
+        display: inline-block;
+        font-size: 18px;
+        font-weight: 400;
+        color: #ddd;
+        vertical-align: middle;
+      }
+      &::after {
+        display: inline-block;
+        content: '';
+        width: 0;
+        height: 100%;
+        vertical-align: middle;
+      }
+    }
+
+    &__code {
+      padding-top: 40px;
+      background-color: #fafafa;
     }
   }
 </style>

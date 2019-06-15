@@ -20,9 +20,10 @@ export default class ComponentRender extends Vue {
   private objKey!: string;
 
   render(h: typeof Vue.prototype.$createElement, context: any): VNode {
-    let { props: { config, objKey}, data } = context,
+    let { props: { config, objKey }, data } = context,
       name = config.name,
-      value = config.props[objKey];
+      type = data.attrs.type || 'props',
+      value = config[type][objKey];
     name = capital(underlineToDump(name));
     // 先匹配特殊属性
     if (attrConfig[name] && attrConfig[name][objKey]) {
@@ -39,7 +40,7 @@ export default class ComponentRender extends Vue {
     } 
 
     let dataType = getDataType(value);
-    // 特殊处理--权宜之计
+    // 特殊处理prop为number类型--权宜之计
     if (isNumber(dataType)) {
       let input = data.on.input;
       data.on.input = function($$v: string) {

@@ -42,16 +42,25 @@
   border-radius: 4px;
   padding: 20px 0;
 }
-.leaf-components__item, .leaf-container__left-content {
+.leaf-components__item, .leaf-container__content {
   .el-row, .el-col, .el-container,
   .el-form, .el-form-item, .leaf-placeholder {
     @include row-col;
   }
 }
 
-.leaf-container__left-content {
+.leaf-container__style {
+  .el-textarea__inner {
+    border-color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+  }
+ 
+}
+
+.leaf-container__content {
   .el-row, .el-col, .el-container, 
-  .el-form, .el-form-item , .leaf-placeholder {
+  .el-form, .el-form-item, .leaf-placeholder {
     padding: 30px 0;
   }
 }

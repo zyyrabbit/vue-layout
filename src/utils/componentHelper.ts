@@ -75,10 +75,14 @@ export const genCode = (configs: IComponentConfig[]) => {
       content += config;
       return;
     }
-
     let { name, attrs, props } = config;
     let attrsStr = attrs ? genPropsOrAttrsStr(attrs, 'attrs') : '';
     let propsStr = props ? genPropsOrAttrsStr(props, 'props') : '';
+    // 处理class
+    if (config.class) {
+      attrsStr += `class="${config.class.split(',').join(' ')}"`;
+    }
+    
     content += `<${name} ${propsStr} ${attrsStr}>`;
     if (config.children) {
       content += genCode(config.children);

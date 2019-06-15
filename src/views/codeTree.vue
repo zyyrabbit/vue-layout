@@ -1,9 +1,17 @@
 <template>
-  <code class="leaf-code">
+  <div class="leaf-code">
     <pre v-highlightjs="templateStr">
       <code class="html"></code>
     </pre>
-  </code>
+     
+ <!--    <pre v-highlightjs="jsStr">
+      <code class="javascript"></code>
+    </pre> -->
+
+    <pre v-highlightjs="cssStr">
+      <code class="css"></code>
+    </pre>
+  </div>
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
@@ -14,12 +22,29 @@ import pretty from 'pretty';
 export default class CodeTree extends Vue {
   @Prop({default: () => []})
   private configs!: any;
+  @Prop({default: ''})
+  private css!: string;
 
   get templateStr() {
     let templateStr = '<template><div class="template">';
     templateStr += genCode(this.configs);
     templateStr += '</div></template>';
+    // 简单处理删除一些代码
+    templateStr = templateStr.replace(/:?\w+=""|"0"/g, '');
     return pretty(templateStr);
+  }
+
+  get jsStr() {
+    let jsStr = 'let a = 1; let c = 2;';
+    jsStr += '';
+    return pretty(jsStr);
+  }
+
+  get cssStr() {
+    let cssStr = '<style>';
+    cssStr += this.css;
+    cssStr += '</style>';
+    return pretty(cssStr);
   }
 }
 </script>
