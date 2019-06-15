@@ -4,7 +4,9 @@ import { VNode } from 'vue';
 import { 
   IComponentConfig,
   objForEach,
-  guid
+  guid,
+  getDataType,
+  isString,
 } from  '@/utils'
 
 // 处理递归组件
@@ -12,11 +14,16 @@ export const renderHanlder = function(h: typeof Vue.prototype.$createElement, co
   let children: VNode[] = [];
   
   configs.forEach((config: IComponentConfig) => {
-    let _children: VNode[] = [];
+    let _children: VNode [] = [];
     if (config.children) {
       _children = renderHanlder(h, config.children)
     }
-    children.push(h(config.name, config , _children));
+    // 判断是否为文本
+    if (isString(getDataType(config))) {
+      children.push(config as any);
+    } else {
+      children.push(h(config.name, config , _children));
+    }
   })
   return children;
 }
@@ -28,10 +35,14 @@ export const wrapHanlder = function(e: DragEvent, parentConfig?: IComponentConfi
   let config = JSON.parse(e.dataTransfer!.getData('config')) || {};
   config.id = guid();
   (config.attrs || (config.attrs = {}))['config-id'] = config.id;
+  // 删除占位标志
+  config.placeholder && delete config.placeholder
+
   if (config.droppable) {
     config.nativeOn = {
-      dragover: (e: DragEvent) => { e.preventDefault() },
-      drop: (e: DragEvent) => { 
+      drop: (e: DragEvent) => {
+        let el: any = e.srcElement || e.target;
+        el.classList.remove('drag-over');
         wrapHanlder(e, config);
       }
     }
@@ -56,17 +67,37 @@ function genPropsOrAttrsStr(obj: any, type: 'attrs' | 'props') {
   return str;
 }
 
-export const recursiveTraverse = (configs: IComponentConfig[]) => {
+export const genCode = (configs: IComponentConfig[]) => {
   let content = '';
   configs.forEach((config: IComponentConfig) => {
+    // 文本元素
+    if (isString(getDataType(config))) {
+      content += config;
+      return;
+    }
+
     let { name, attrs, props } = config;
     let attrsStr = attrs ? genPropsOrAttrsStr(attrs, 'attrs') : '';
     let propsStr = props ? genPropsOrAttrsStr(props, 'props') : '';
     content += `<${name} ${propsStr} ${attrsStr}>`;
     if (config.children) {
-      content += recursiveTraverse(config.children);
+      content += genCode(config.children);
     }
     content += `</${name}>`
   })
   return content;
+}
+
+// 递归查找删除
+export const deleteComp = (configs: IComponentConfig[], configId: string) => {
+  configs.some((config: IComponentConfig, index: number) => {
+    if (config.id === configId) {
+      configs.splice(index, 1);
+      return true;
+    }
+    if (config.children) {
+      return deleteComp(config.children, configId);
+    }
+    return false;
+  })
 }

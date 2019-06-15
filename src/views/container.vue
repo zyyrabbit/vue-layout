@@ -2,9 +2,12 @@
   <el-row class="leaf-container">
     <el-col
       :span="19"
-      @dragover.native="dragOver"
-      @drop.native="drop"
-      @click.native="selectComponet"
+      @dragenter.native.stop="dragenter"
+      @dragover.native.stop="dragOver"
+      @dragleave.native.stop="dragleave"
+      @drop.native.stop="drop"
+      @click.native.stop="selectComponet"
+      @contextmenu.native.stop="rightClick"
       class="leaf-container__left">
       <div class="leaf-container__left-tools">
         <el-button type="text" @click="action">预览代码</el-button>
@@ -13,7 +16,8 @@
         <component-render
           v-for="config in configs"
           :key="config.id"
-          :config="config">
+          :config="config"
+          @focus.stop="selectComponet"> <!-- 用于处理el-select中，阻止click事件冒泡 -->
         </component-render>
       </div>
       <div v-if="showType === 'code'">
@@ -30,7 +34,11 @@ import { Component, Vue } from 'vue-property-decorator';
 import ComponentRender from './componentRender.vue';
 import CodeTree from './codeTree.vue';
 import attrs from './attrs.vue';
-import { wrapHanlder, breadthTraverse } from '@/utils';
+import { 
+  wrapHanlder, 
+  breadthTraverse,
+  deleteComp
+} from '@/utils';
 
 @Component({
   components: {
@@ -40,7 +48,7 @@ import { wrapHanlder, breadthTraverse } from '@/utils';
   }
 })
 export default class Container extends Vue {
-  private configs = [];
+  private configs: any[] = [];
 
   private showType: string = 'design';
   private selectConfig: any = {};
@@ -50,6 +58,44 @@ export default class Container extends Vue {
   }
 
   private selectComponet(e: MouseEvent) {
+    let configId = this.getSelectConfigId(e);
+    if (!configId) return;
+    this.selectConfig = breadthTraverse(this.configs, 'children', (item: any) => item.id === configId);
+  }
+
+  private rightClick(e: MouseEvent) {
+    e.preventDefault();
+    let configId = this.getSelectConfigId(e);
+    if (!configId) return;
+    deleteComp(this.configs, configId);
+    if (configId === this.selectConfig.id) {
+      this.selectConfig = {}
+    }
+  }
+
+  private  dragenter(e: DragEvent) {
+    e.toElement.classList.add('drag-over');
+  }
+
+  private  dragOver(e: DragEvent) {
+    e.preventDefault();
+  }
+
+  private  dragleave(e: DragEvent) {
+    e.toElement.classList.remove('drag-over');
+  }
+
+  // 松开拖放e是容器元素
+  private drop(e: DragEvent) {
+    let el: any = e.srcElement || e.target;
+    el.classList.remove('drag-over');
+    if (this.showType === 'code') return;
+    let config = wrapHanlder(e);
+
+    this.configs.push(config);
+  }
+
+  private getSelectConfigId(e: MouseEvent) {
     e.stopPropagation();
     let el: any = e.srcElement || e.target,
         configId = el.getAttribute('config-id');
@@ -58,23 +104,9 @@ export default class Container extends Vue {
       el = el.parentElement;
       configId = el.getAttribute('config-id');
     }
-    if (configId) {
-      this.selectConfig = breadthTraverse(this.configs, 'children', (item: any) => item.id === configId);
-    }
+    return configId;
   }
 
-
-  private dragOver(e: MouseEvent) {
-    e.preventDefault();
-  }
-
-  // 松开拖放e是容器元素
-  private drop(e: DragEvent) {
-    if (this.showType === 'code') return;
-    let config = wrapHanlder(e);
-    
-    this.configs.push(config);
-  }
   
 }
 </script>

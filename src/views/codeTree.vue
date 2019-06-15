@@ -7,7 +7,7 @@
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { recursiveTraverse }  from '@/utils';
+import { genCode }  from '@/utils';
 import pretty from 'pretty';
 
 @Component
@@ -17,7 +17,7 @@ export default class CodeTree extends Vue {
 
   get templateStr() {
     let templateStr = '<template><div class="template">';
-    templateStr += recursiveTraverse(this.configs);
+    templateStr += genCode(this.configs);
     templateStr += '</div></template>';
     return pretty(templateStr);
   }

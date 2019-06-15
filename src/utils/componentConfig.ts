@@ -3,7 +3,9 @@ export interface IComponentConfig {
   props?: object,
   attrs?: object,
   children?: IComponentConfig[],
-  droppable?: boolean
+  droppable?: boolean,
+  id?: string,
+  placeholder?: string,
 }
 
 const layoutComNames = ['el-container', 'el-header', 'el-main', 'el-footer'].map((name: string) => {
@@ -13,6 +15,7 @@ const layoutComNames = ['el-container', 'el-header', 'el-main', 'el-footer'].map
     children: []
   }
 })
+
 const layout: IComponentConfig[] = [
   /* ...layoutComNames,
   {
@@ -50,13 +53,40 @@ const layout: IComponentConfig[] = [
   
 ]
 
-export const configs: IComponentConfig[] = [
-  ...layout,
+// 表单元素
+const formElement: IComponentConfig[] = [
+  {
+    name:  'el-form',
+    droppable: true,
+    props: {
+      'label-position': 'right',
+      model: {},
+      disabled: false,
+    },
+    children: []
+  },
+  {
+    name:  'el-form-item',
+    droppable: true,
+    placeholder: 'div',
+    props: {
+      label: '',
+      size: '',
+      'label-width': '',
+      required: false,
+      'show-message': true,
+      'inline-message': false,
+    },
+    attrs: {
+      placeholder: '请输入内容'
+    },
+    children: []
+  },
   {
     name:  'el-input',
     props: {
-      value: 1,
-      size: '',
+      prop: '',
+      label: '',
       clearable: false,
       disabled: false,
     },
@@ -86,10 +116,21 @@ export const configs: IComponentConfig[] = [
   {
     name:  'el-radio',
     props: {
-      value: '单选按钮',
+      value: '单选框',
     },
     attrs: {
-      label: '单选按钮'
+      label: '单选框'
     }
+  },
+  {
+    name:  'el-button',
+    attrs: {
+      type: 'primary'
+    },
+    children: ['按钮'] // 待解决ts检查报错
   }
+]
+export const configs: IComponentConfig[] = [
+  ...layout,
+  ...formElement
 ]
