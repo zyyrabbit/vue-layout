@@ -27,7 +27,7 @@ export default class Components extends Vue {
   private configs = configs;
   private activeUI = 'element-ui';
 
-  private  dragStart(e: any, config: any) {
+  private dragStart(e: any, config: any) {
     e.dataTransfer.setData('config', JSON.stringify(config));
   }
 }
@@ -46,6 +46,9 @@ export default class Components extends Vue {
         line-height: 40px;
       }
       margin-top: 20px;
+      &:last-child {
+         margin-bottom: 20px;
+      }
     }
   }
 </style>

@@ -6,25 +6,62 @@ const common: index = {
   String: 'el-input',
   Number: 'el-input'
 }
-const ElRow: index = {
-  justify: {
-    type: 'el-select',
-    options: ['start', 'end', 'center', 'space-around', 'space-between']
-  },
-  align: {
-    type: 'el-select',
-    options: ['top', 'middle', 'bottom']
-  }
-}
-const ElInput: index = {
-  size: {
-    type: 'el-select',
-    options: ['medium' , 'small', 'mini']
-  }
+// 枚举
+let justify = {
+  type: 'el-select',
+  options: ['start', 'end', 'center', 'space-around', 'space-between']
 }
 
+let align = {
+  type: 'el-select',
+  options: ['top', 'middle', 'bottom']
+}
+
+let size = {
+  type: 'el-select',
+  options: ['medium' , 'small', 'mini']
+}
+
+// 组件匹配
+const ElRow: index = { justify, align }
+const ElForm: index = {
+  'label-posiiton': {
+    type: 'el-select',
+    options: ['right' , 'left', 'top']
+  }
+}
+const ElFormItem: index = { size }
+const ElInput: index = { size }
+const ElButton: index = { 
+  size,
+  type: {
+    type: 'el-select',
+    options: ['primary', 'success', 'warning', 'danger', 'info', 'text']
+  }
+}
+const ElProgress: index = {
+  type: {
+    type: 'el-select',
+    options: ['line', 'circle', 'dashboard']
+  },
+  status: {
+    type: 'el-select',
+    options: ['success', 'exception']
+  }
+}
+const ElSlider: index = {
+  'input-size': {
+    type: 'el-select',
+    options: ['large', ...size.options]
+  }
+}
 export const attrConfig: index = {
   ElRow,
+  ElForm,
+  ElFormItem,
   ElInput,
-  common
+  ElButton,
+  common,
+  ElProgress,
+  ElSlider
 }

@@ -59,9 +59,9 @@ function genPropsOrAttrsStr(obj: any, type: 'attrs' | 'props') {
     if (type === 'attrs' && key === 'config-id') return;
 
     if (type === 'attrs') {
-      str += `${key}="${value}"`;
+      str += ` ${key}="${value}"`;
     } else {
-      str += `:${key}="${value}"`;
+      str += ` :${key}="${value}"`;
     }
   })
   return str;
@@ -83,7 +83,7 @@ export const genCode = (configs: IComponentConfig[]) => {
       attrsStr += `class="${config.class.split(',').join(' ')}"`;
     }
     
-    content += `<${name} ${propsStr} ${attrsStr}>`;
+    content += `<${name}${propsStr}${attrsStr}>`;
     if (config.children) {
       content += genCode(config.children);
     }

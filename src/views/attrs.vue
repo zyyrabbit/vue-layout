@@ -3,6 +3,7 @@
     <el-col :span="20">
       <h3 class="leaf-attrs--title">属性编辑</h3>
       <el-form v-if="selectConfig">
+        <el-form-item>{{selectConfig.name}}</el-form-item>
         <!-- props -->
         <el-form-item>Props</el-form-item>
         <el-form-item 
@@ -17,7 +18,7 @@
         </el-form-item>
         <!-- 属性 -->
         <el-form-item>Attrs</el-form-item>
-        <!-- 暂时没找到好办法，只能 v-if 和 v-for -->
+        <!-- 暂时没找到好办法，只能 mix v-if 和 v-for -->
         <el-form-item 
           v-for="(value, key) in selectConfig.attrs"
           v-if="key !== 'config-id'"
@@ -41,8 +42,6 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
-import Element from 'element-ui';
-import { objForEach } from  '@/utils';
 import AttrRender from './attrRender.vue';
 
 @Component({

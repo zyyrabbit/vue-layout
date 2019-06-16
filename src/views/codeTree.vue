@@ -4,9 +4,9 @@
       <code class="html"></code>
     </pre>
      
- <!--    <pre v-highlightjs="jsStr">
+    <pre v-highlightjs="jsStr">
       <code class="javascript"></code>
-    </pre> -->
+    </pre>
 
     <pre v-highlightjs="cssStr">
       <code class="css"></code>
@@ -20,31 +20,46 @@ import pretty from 'pretty';
 
 @Component
 export default class CodeTree extends Vue {
-  @Prop({default: () => []})
+  @Prop({ default: () => [] })
   private configs!: any;
-  @Prop({default: ''})
+  @Prop({ default: '' })
   private css!: string;
 
   get templateStr() {
-    let templateStr = '<template><div class="template">';
-    templateStr += genCode(this.configs);
-    templateStr += '</div></template>';
+    let templateStr = `<template><div class="template">${genCode(this.configs)}</div></template>`;
     // 简单处理删除一些代码
-    templateStr = templateStr.replace(/:?\w+=""|"0"/g, '');
+    templateStr = templateStr.replace(/:?\w+=(""|"0")/g, '');
+    templateStr = templateStr.replace(/:(\w+)="[^"]*"/g, ':$1="$1"');
     return pretty(templateStr);
   }
 
   get jsStr() {
-    let jsStr = 'let a = 1; let c = 2;';
-    jsStr += '';
+    let jsStr = `
+      <script lang="ts">
+      import { Component, Vue, Prop } from 'vue-property-decorator';
+      @Component
+      export default class Leaf extends Vue {
+        ${this.dealTemplateVar()}
+      }
+      <\\script>`;
     return pretty(jsStr);
   }
 
   get cssStr() {
-    let cssStr = '<style>';
-    cssStr += this.css;
-    cssStr += '</style>';
+    let cssStr = `<style>${this.css}</style>`;
     return pretty(cssStr);
+  }
+
+  private dealTemplateVar() {
+    let patt = /:(\w+)="[^"]*"/g,
+        ret,
+        result = [];
+    while((ret = patt.exec(this.templateStr)) != null) {
+      result.push(ret[1]);   
+    }
+    return result.map((key: string) => {
+      return `private ${key};`;
+    }).join('');
   }
 }
 </script>

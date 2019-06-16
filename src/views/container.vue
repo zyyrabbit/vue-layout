@@ -19,6 +19,9 @@
         <el-button type="text" @click="action('style')">
           编辑样式
         </el-button>
+        <el-button type="text" @click="deleteAll">
+          全部删除
+        </el-button>
       </div>
       <div v-if="showType === 'design'" class="leaf-container__content">
         <component-render
@@ -28,7 +31,7 @@
           @focus.stop="selectComponet"> <!-- 用于处理el-select中，阻止click事件冒泡 -->
         </component-render>
         <span v-if="configs.length === 0" class="leaf-container__content--intro">
-          请拖拽组件进来
+          请拖拽组件进来...
         </span>
       </div>
       <code-tree 
@@ -75,24 +78,27 @@ export default class Container extends Vue {
   private showType: string = 'design';
   private selectConfig: any = null;
   private css: string = '';
-
-  get isShowLayout() {
-    return this.showType === 'design';
-  }
+  
   private action(showType: 'design' | 'code' | 'style') {
     this.showType = showType;
   }
 
+  private deleteAll() {
+    this.configs = [];
+    this.selectConfig && (this.selectConfig = null);
+    this.showType =  'design';
+  }
+
   private addUserStyle() {
     if (!this.css) return;
-    let style = document.getElementById('custom-layout');
+    let style: any = document.getElementById('custom-layout');
     if (!style) {
       style = document.createElement('style');
       style.id = 'custom-layout';
       style.setAttribute('scoped', '');
       style.type = 'text/css';
       let container = document.getElementById('leaf-container');
-      container.appendChild(style);
+      container!.appendChild(style);
     }
     let cssText = document.createTextNode(this.css);
     style.innerHTML = '';
@@ -131,7 +137,7 @@ export default class Container extends Vue {
   private drop(e: DragEvent) {
     let el: any = e.srcElement || e.target;
     el.classList.remove('drag-over');
-    if (this.showType === 'code') return;
+    if (this.showType !== 'design') return;
     let config = wrapHanlder(e);
     this.configs.push(config);
   }
@@ -139,11 +145,18 @@ export default class Container extends Vue {
   private getSelectConfigId(e: MouseEvent) {
     e.stopPropagation();
     let el: any = e.srcElement || e.target,
-        configId = el.getAttribute('config-id');
-    // 处理触发事件不是组件元素情况
-    while(!configId && el.parentElement) {
-      el = el.parentElement;
-      configId = el.getAttribute('config-id');
+        configId = el.getAttribute('config-id'),
+        cellIndex = el.cellIndex; // 处理element-ui table 和 table-column-item特殊情况
+    // 处理触发事件不是组件根元素情况
+    let currentEle = el;
+    while(!configId && currentEle.parentElement) {
+      currentEle = currentEle.parentElement;
+      configId = currentEle.getAttribute('config-id');
+    }
+    // 处理element-ui table 和 table-column-item特殊情况
+    if (el.tagName === 'TH') {
+      let ElTableHiddenColumns = currentEle.getElementsByClassName('hidden-columns')[0];
+      ElTableHiddenColumns && (configId = ElTableHiddenColumns.children[cellIndex].getAttribute('config-id'));
     }
     return configId;
   }
@@ -177,7 +190,6 @@ export default class Container extends Vue {
     &__content, &__code, &__style {
       height: 100%;
       overflow-y: auto;
-      
     }
 
     &__content, &__style {
@@ -185,23 +197,14 @@ export default class Container extends Vue {
     }
 
     &__content {
-      display: inline-block;
-      width: 100%;
-      text-align: center;
-      vertical-align: middle;
       &--intro {
-        display: inline-block;
-        font-size: 18px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate3d(-50%, -50%, 0);
+        font-size: 30px;
         font-weight: 400;
-        color: #ddd;
-        vertical-align: middle;
-      }
-      &::after {
-        display: inline-block;
-        content: '';
-        width: 0;
-        height: 100%;
-        vertical-align: middle;
+        color: #ccc;
       }
     }
 
