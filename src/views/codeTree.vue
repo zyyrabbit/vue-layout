@@ -28,7 +28,7 @@ export default class CodeTree extends Vue {
   get templateStr() {
     let templateStr = `<template><div class="template">${genCode(this.configs)}</div></template>`;
     // 简单处理删除一些代码
-    templateStr = templateStr.replace(/:?[\w-]+=(""|"0")/g, '');
+    templateStr = templateStr.replace(/:?[\w-_]+=(""|"0")/g, '');
     templateStr = templateStr.replace(/:(\w+)="([^"]*)"/g, (match, $1, $2) => {
       if (/false|true|[0-9]+/.test($2)) {
         return `:${$1}="${$2}"`;

@@ -98,7 +98,7 @@ export const genCode = (configs: IComponentConfig[]) => {
     let propsStr = props ? genPropsOrAttrsStr(props, 'props') : '';
     // 处理class
     if (config.class) {
-      attrsStr += `class="${config.class.split(',').join(' ')}"`;
+      attrsStr += ` class="${config.class.split(',').join(' ')}"`;
     }
     
     content += `<${name}${propsStr}${attrsStr}>`;
