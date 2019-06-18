@@ -1,10 +1,12 @@
+type index = {[index: string]: any};
 export interface IComponentConfig {
   name: string,
-  props?: object,
-  attrs?: object,
+  props?: index,
+  attrs?: index,
   children?: IComponentConfig[],
   droppable?: boolean,
   id?: string,
+  type?: string,
   placeholder?: string,
   'class'?: string
 }
@@ -27,6 +29,18 @@ const layout: IComponentConfig[] = [
     },
     children: []
   }, */
+  {
+    name:  'leaf-html',
+    type: 'html',
+    droppable: true,
+    placeholder: 'div',
+    attrs: {
+      tag: 'div',
+      text: '',
+      id: 'plain-html-layout'
+    },
+    children: []
+  },
   {
     name:  'el-row',
     droppable: true,
@@ -78,12 +92,12 @@ const formElement: IComponentConfig[] = [
     droppable: true,
     placeholder: 'div',
     props: {
-      'label-width': '',
       required: false,
       'show-message': true,
       'inline-message': false,
     },
     attrs: {
+      'label-width': '',
       label: '',
       size: '',
     },

@@ -56,10 +56,18 @@ export default class ComponentRender extends Vue {
     if (data.on && configCopy.name !== 'el-select') {
       delete data.on.focus
     }
+
+    if (configCopy.on) {
+      data.on = {
+        ...data.on,
+        ...configCopy.on
+      }
+    }
   
     if (configCopy.children) {
       children = renderHanlder(h, configCopy.children);
     }
+
     return h(config.name, data , children);
   }
 }

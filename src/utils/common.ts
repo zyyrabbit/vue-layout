@@ -14,7 +14,8 @@ export const underlineToDump = (str: string) => str.replace(/-(\w)/g, function(m
 export const capital = (str: string) => str.replace(/^\w/, function(word: string) {
   return  word.toUpperCase();
 })
-
+// 首字母大写驼峰
+export const underlineToCapitalDump = (str: string) => capital(underlineToDump(str));
 // 对象遍历
 export const objForEach = (obj: index = {}, callback: callback) => {
   Object.keys(obj).forEach((key: string, index: number) => {

@@ -5,8 +5,7 @@ import {
   getDataType, 
   attrConfig,
   objForEach,
-  underlineToDump,
-  capital,
+  underlineToCapitalDump,
   isNumber
 } from '@/utils';
 
@@ -24,7 +23,7 @@ export default class ComponentRender extends Vue {
       name = config.name,
       type = data.attrs.type || 'props',
       value = config[type][objKey];
-    name = capital(underlineToDump(name));
+    name = underlineToCapitalDump(name);
     // 先匹配特殊属性
     if (attrConfig[name] && attrConfig[name][objKey]) {
       let { type, options } =  attrConfig[name][objKey];

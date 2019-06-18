@@ -47,7 +47,7 @@ class Bootstrap {
     });
 
     this.router.afterEach((to: Route, from: Route) => {
-      document.title = `leaf-vue-layout`;
+      document.title = `leaf-design`;
     });
 
     // 注册 RouterHooks

@@ -5,7 +5,8 @@ interface CompsList {
 }
 
 import SvgIcon from './Icon/SvgIcon.vue';
-
+import LeafHtml from './LeafHtml.vue';
 export const Comps: CompsList = {
-  SvgIcon
+  SvgIcon,
+  LeafHtml
 };

@@ -13,6 +13,9 @@
         <el-button type="text" @click="action('design')">
           页面设计
         </el-button>
+        <el-button type="text" @click="action('preview')">
+          预览页面
+        </el-button>
         <el-button type="text" @click="action('code')">
           预览代码
         </el-button>
@@ -23,7 +26,10 @@
           全部删除
         </el-button>
       </div>
-      <div v-if="showType === 'design'" class="leaf-container__content">
+      <div 
+        v-if="showType === 'design' || showType === 'preview'"
+        class="leaf-container__content"
+        :class="{'leaf-container__content-preview': showType === 'preview'}">
         <component-render
           v-for="config in configs"
           :key="config.id"
@@ -79,7 +85,7 @@ export default class Container extends Vue {
   private selectConfig: any = null;
   private css: string = '';
   
-  private action(showType: 'design' | 'code' | 'style') {
+  private action(showType: 'design' | 'code' | 'style' | 'preview') {
     this.showType = showType;
   }
 

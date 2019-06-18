@@ -7,6 +7,7 @@ import {
   guid,
   getDataType,
   isString,
+  underlineToCapitalDump,
 } from  '@/utils'
 
 // 处理递归组件
@@ -36,16 +37,19 @@ export const wrapHanlder = function(e: DragEvent, parentConfig?: IComponentConfi
   config.id = guid();
   (config.attrs || (config.attrs = {}))['config-id'] = config.id;
   // 删除占位标志
-  config.placeholder && delete config.placeholder
-
-  if (config.droppable) {
-    config.nativeOn = {
-      drop: (e: DragEvent) => {
-        let el: any = e.srcElement || e.target;
-        el.classList.remove('drag-over');
-        wrapHanlder(e, config);
-      }
+  config.placeholder && delete config.placeholder;
+  // 利用闭包
+  let listener = {
+    drop: (e: DragEvent) => {
+      let el: any = e.srcElement || e.target;
+      el.classList.remove('drag-over');
+      wrapHanlder(e, config);
     }
+  };
+  if (config.type && config.type === 'html') {
+    config.on = listener;
+  } else if (config.droppable) {
+    config.nativeOn = listener;
   }
   parentConfig && parentConfig.children!.push(config);
   return config;
@@ -66,6 +70,16 @@ function genPropsOrAttrsStr(obj: any, type: 'attrs' | 'props') {
   })
   return str;
 }
+// 处理元素dom
+function dealHtmlElement(config: IComponentConfig): IComponentConfig {
+  let configCopy = _.cloneDeep(config);
+  configCopy.name = configCopy.attrs!.tag;
+  if (configCopy.attrs!.text) {
+    configCopy.children = [configCopy.attrs!.text];
+  }
+  configCopy.attrs = {};
+  return configCopy;
+}
 
 export const genCode = (configs: IComponentConfig[]) => {
   let content = '';
@@ -74,6 +88,10 @@ export const genCode = (configs: IComponentConfig[]) => {
     if (isString(getDataType(config))) {
       content += config;
       return;
+    }
+    // 处理元素html元素Dom
+    if (config.type === 'html') {
+      config = dealHtmlElement(config);
     }
     let { name, attrs, props } = config;
     let attrsStr = attrs ? genPropsOrAttrsStr(attrs, 'attrs') : '';

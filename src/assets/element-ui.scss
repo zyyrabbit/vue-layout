@@ -43,7 +43,7 @@
   padding: 20px 0;
 }
 .leaf-components__item, .leaf-container__content {
-  .el-row, .el-col, .el-container,
+  .el-row, .el-col, .el-container, #plain-html-layout,
   .el-form, .el-form-item, .leaf-placeholder {
     @include row-col;
   }
@@ -59,9 +59,17 @@
 }
 
 .leaf-container__content {
-  .el-row, .el-col, .el-container, 
+  .el-row, .el-col, .el-container, #plain-html-layout,
   .el-form, .el-form-item, .leaf-placeholder {
     padding: 30px 0;
+  }
+}
+/* 预览样式覆盖 */
+.leaf-container__content-preview {
+  .el-row, .el-col, .el-container, #plain-html-layout,
+  .el-form, .el-form-item, .leaf-placeholder {
+    border: none;
+    padding: 0;
   }
 }
 

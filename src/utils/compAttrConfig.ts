@@ -36,7 +36,7 @@ const ElButton: index = {
   size,
   type: {
     type: 'el-select',
-    options: ['primary', 'success', 'warning', 'danger', 'info', 'text']
+    options: ['default', 'primary', 'success', 'warning', 'danger', 'info', 'text']
   }
 }
 const ElProgress: index = {
@@ -55,6 +55,12 @@ const ElSlider: index = {
     options: ['large', ...size.options]
   }
 }
+const LeafHtml: index = {
+  tag: {
+    type: 'el-select',
+    options: ['div', 'span', 'p']
+  }
+}
 export const attrConfig: index = {
   ElRow,
   ElForm,
@@ -63,5 +69,6 @@ export const attrConfig: index = {
   ElButton,
   common,
   ElProgress,
-  ElSlider
+  ElSlider,
+  LeafHtml
 }
