@@ -10,8 +10,8 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import components from './components.vue';
-import container from './container.vue';
+import components from '@/views/component/components.vue';
+import container from '@/views/container/container.vue';
 
 @Component({
   components: {

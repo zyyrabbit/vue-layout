@@ -23,6 +23,7 @@ export default class ComponentRender extends Vue {
       name = config.name,
       type = data.attrs.type || 'props',
       value = config[type][objKey];
+
     name = underlineToCapitalDump(name);
     // 先匹配特殊属性
     if (attrConfig[name] && attrConfig[name][objKey]) {

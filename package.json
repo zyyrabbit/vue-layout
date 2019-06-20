@@ -13,7 +13,6 @@
     "date-fns": "^1.29.0",
     "element-ui": "2.4.11",
     "highlight.js": "^9.15.8",
-    "lodash": "^4.17.11",
     "pretty": "^2.0.0",
     "vue": "^2.5.17",
     "vue-class-component": "^6.0.0",

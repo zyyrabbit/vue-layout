@@ -8,17 +8,6 @@ declare module 'vue-router/types/router' {
 }
 declare module 'vue/types/vue' {
   interface Vue {
-    form: object;
-    page: {
-      pageNum: number;
-      pageSize: number;
-      layout: string;
-      [key:string]:any;
-    };
-    pageTotal: number;
-    onFormatTime: (val: number, formatString?: string) => string;
-    onTimer: (func: Function, time?: number) => number;
-    clearTimer: (timer: number) => void;
   }
 }
 interface Mixins {
@@ -41,28 +30,6 @@ const dateFormat = {
   },
 };
 
-/**
- * 分页属性
- */
-const pageData = {
-  data() {
-    let page: {
-      pageNum: number,
-      pageSize: number,
-      [key: string]: any
-    } = {
-      pageNum: 1,
-      pageSize: 10,
-    }
-    return {
-      page,
-      pageTotal: 0,
-    };
-  },
-};
-
-
 export const mixins: Mixins = {
   dateFormat,
-  pageData,
 };

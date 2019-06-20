@@ -6,7 +6,7 @@
         <el-form-item>{{selectConfig.name}}</el-form-item>
         <!-- props -->
         <el-form-item>Props</el-form-item>
-        <el-form-item 
+        <el-form-item
           v-for="(value, key) in selectConfig.props" 
           :key="key" 
           :label="key">

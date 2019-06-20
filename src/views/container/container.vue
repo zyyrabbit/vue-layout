@@ -48,7 +48,7 @@
       <div v-else class="leaf-container__style">
         <el-input
           type="textarea"
-          @blur.stop="addUserStyle"
+          @blur="addUserStyle"
           :autosize="{ minRows: 20, maxRows: 100 }"
           placeholder=".leaf-designer{ ... }"
           v-model="css">
@@ -62,7 +62,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import ComponentRender from  '@/views/component/components.vue';
+import ComponentRender from '@/views/component/componentRender.vue';
 import CodeTree from './codeTree.vue';
 import attrs from './attrs.vue';
 import { 

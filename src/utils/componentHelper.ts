@@ -7,7 +7,7 @@ import {
   guid,
   getDataType,
   isString,
-  underlineToCapitalDump,
+  deepCopy,
 } from  '@/utils'
 
 // 处理递归组件
@@ -72,7 +72,7 @@ function genPropsOrAttrsStr(obj: any, type: 'attrs' | 'props') {
 }
 // 处理元素dom
 function dealHtmlElement(config: IComponentConfig): IComponentConfig {
-  let configCopy = _.cloneDeep(config);
+  let configCopy = deepCopy(config);
   configCopy.name = configCopy.attrs!.tag;
   if (configCopy.attrs!.text) {
     configCopy.children = [configCopy.attrs!.text];

@@ -2,9 +2,9 @@ import {
   index
 } from '@/utils';
 const common: index = { 
-  Boolean: 'el-switch',
-  String: 'el-input',
-  Number: 'el-input'
+  boolean: 'el-switch',
+  string: 'el-input',
+  number: 'el-input'
 }
 // 枚举
 let justify = {

@@ -1,6 +1,7 @@
 
 import { objForEach, index } from '@/utils';
 type strategy = (target: any, origin: any) => void;
+
 const defaultMergeStrategy: index = {
   props: (target: any, origin: any) => {
     target.props = origin.props;
