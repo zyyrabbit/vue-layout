@@ -10,20 +10,13 @@
       @contextmenu.native.stop="rightClick"
       class="leaf-container__left">
       <div class="leaf-container__tools">
-        <a title="页面设计" @click="action('design')">
-          <svg-icon name="design" ></svg-icon>
-        </a>
-        <a title="预览页面" @click="action('preview')">
-           <svg-icon name="preview-html"></svg-icon>
-        </a>
-        <a title="预览代码" @click="action('code')">
-          <svg-icon name="preview-code"></svg-icon>
-        </a>
-        <a title="编辑样式" @click="action('style')">
-          <svg-icon name="edit"></svg-icon>
-        </a>
-        <a title="全部删除" @click="deleteAll">
-          <svg-icon name="delete"></svg-icon>
+        <a 
+          v-for="item in tools"
+          :class="{'leaf-container__tools--select': item.type === showType}"
+          :key="item.type"
+          :title="item.title"
+          @click="action(item.type)">
+          <svg-icon :name="item.type"></svg-icon>
         </a>
       </div>
       <div 
@@ -49,7 +42,7 @@
         <el-input
           type="textarea"
           @blur="addUserStyle"
-          :autosize="{ minRows: 20, maxRows: 100 }"
+          :autosize="{ minRows: 15, maxRows: 100 }"
           placeholder=".leaf-designer{ ... }"
           v-model="css">
         </el-input>
@@ -84,15 +77,40 @@ export default class Container extends Vue {
   private showType: string = 'design';
   private selectConfig: any = null;
   private css: string = '';
+  private tools: object[] = [
+    {
+      title: '页面设计',
+      type: 'design'
+    },
+    {
+      title: '预览页面',
+      type: 'preview'
+    },
+    {
+      title: '预览代码',
+      type: 'code'
+    },
+    {
+      title: '编辑样式',
+      type: 'style'
+    },
+    {
+      title: '全部删除',
+      type: 'delete'
+    }
+  ]
   
-  private action(showType: 'design' | 'code' | 'style' | 'preview') {
+  private action(showType: string) {
     this.showType = showType;
+    if(showType === 'delete') {
+      this.deleteAll();
+    }
   }
 
   private deleteAll() {
     this.configs = [];
     this.selectConfig && (this.selectConfig = null);
-    this.showType =  'design';
+    this.showType = 'design';
   }
 
   private addUserStyle() {
@@ -179,7 +197,6 @@ export default class Container extends Vue {
     }
 
     &__tools {
-      padding: 0 10px;
       height: 50px;
       background-color:#eee;
       border-bottom: 1px solid #ddd;
@@ -191,12 +208,15 @@ export default class Container extends Vue {
       text-align: right;
       >a {
         display: inline-block;
-        margin-right: 20px;
+        padding: 10px;
         height: 100%;
         svg {
           width: 30px;
           height: 30px;
           vertical-align: middle;
+          &:hover {
+            fill: #409EFF;
+          }
         }
         &::after {
           display: inline-block;
@@ -205,6 +225,9 @@ export default class Container extends Vue {
           width: 1px;
           vertical-align: middle;
         }
+      }
+      &--select {
+         fill: #409EFF;
       }
     
     }

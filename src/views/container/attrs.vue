@@ -43,7 +43,6 @@ import {
   filterAttrs,
   index
 } from '@/utils';
-import { Pagination } from 'element-ui';
 @Component({
   components: {
     AttrRender
