@@ -5,9 +5,6 @@
       <div class="header-wrapper__left--brand-text">
         Leaf-Design
       </div>
-      <div class="header-wrapper__left--brand-btn" @click.stop="onMobileToggle">
-        <svg-icon name="indent"></svg-icon>
-      </div>
     </div>
     <div class="header-wrapper__right" :style="{ 'background-color': theme }">
       <div class="item-group">
@@ -30,26 +27,8 @@
 
     @Getter('theme/theme')
     public theme!: string;
-   
-    private themes: any[] = [
-      {
-        key: 1,
-        value: '#ccc'
-      },
-      {
-        key: 2,
-        value: '#123'
-      },
-      {
-        key: 3,
-        value: '#456'
-      }
-    ]
 
     private color: string = '#409EFF';
-    private onMobileToggle() {
-      this.$emit('toggle');
-    }
 
     private changeTheme(val: string) {
       this.$store.dispatch('theme/setTheme', val);

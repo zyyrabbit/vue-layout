@@ -1,6 +1,13 @@
 import { 
   index
 } from '@/utils';
+// 过来属性配置
+export const filterAttrs: index = {
+  'config-id': true,
+   id: true
+};
+
+
 const common: index = { 
   boolean: 'el-switch',
   string: 'el-input',

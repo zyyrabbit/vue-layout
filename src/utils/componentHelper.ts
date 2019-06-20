@@ -8,7 +8,9 @@ import {
   getDataType,
   isString,
   deepCopy,
+  specCompNamesMap,
 } from  '@/utils'
+import { MessageBox } from 'element-ui';
 
 // 处理递归组件
 export const renderHanlder = function(h: typeof Vue.prototype.$createElement, configs: IComponentConfig[]):  VNode[] {
@@ -29,16 +31,21 @@ export const renderHanlder = function(h: typeof Vue.prototype.$createElement, co
   return children;
 }
 
-export const wrapHanlder = function(e: DragEvent, parentConfig?: IComponentConfig): IComponentConfig {
+export const wrapHanlder = function(e: DragEvent, parentConfig?: IComponentConfig): IComponentConfig | null {
   // 阻止冒泡
   e.stopPropagation();
-  // to-do try-catch 待处理
-  let config = JSON.parse(e.dataTransfer!.getData('config')) || {};
+  let config: any;
+  try {
+    config = JSON.parse(e.dataTransfer!.getData('config')) || {};
+  } catch(e) {
+    console.error(e);
+    return null;
+  }
   config.id = guid();
   (config.attrs || (config.attrs = {}))['config-id'] = config.id;
   // 删除占位标志
   config.placeholder && delete config.placeholder;
-  // 利用闭包
+  // 利用闭包--需要确定一下闭包是否泄漏
   let listener = {
     drop: (e: DragEvent) => {
       let el: any = e.srcElement || e.target;
@@ -46,10 +53,17 @@ export const wrapHanlder = function(e: DragEvent, parentConfig?: IComponentConfi
       wrapHanlder(e, config);
     }
   };
+  // 处理原生html
   if (config.type && config.type === 'html') {
     config.on = listener;
   } else if (config.droppable) {
     config.nativeOn = listener;
+  }
+  // 处理组件是否可以嵌套
+  if (specCompNamesMap[config.name] && 
+      (!parentConfig || (config.parentName && config.parentName !== parentConfig.name))) {
+    MessageBox.alert(`组件${config.name}, 只能拖入${specCompNamesMap[config.name]}`);
+    return null;
   }
   parentConfig && parentConfig.children!.push(config);
   return config;

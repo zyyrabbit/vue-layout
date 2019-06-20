@@ -1,15 +1,21 @@
 type index = {[index: string]: any};
 export interface IComponentConfig {
-  name: string,
-  props?: index,
-  attrs?: index,
+  name: string, // 组件名称
+  props?: index, // 组件props
+  attrs?: index, // 组件attrs
   children?: IComponentConfig[],
-  droppable?: boolean,
+  parentName?: string, // 父组件名称
+  droppable?: boolean, // 组件是否可以放置元素
   id?: string,
   type?: string,
   placeholder?: string,
   'class'?: string
 }
+// 判断是否可以拖入生成框内
+export const specCompNamesMap: index = {
+  'el-form-item': 'el-form',
+  'el-table-column': 'el-table'
+};
 
 const layoutComNames = ['el-container', 'el-header', 'el-main', 'el-footer'].map((name: string) => {
   return {
@@ -89,6 +95,7 @@ const formElement: IComponentConfig[] = [
   },
   {
     name:  'el-form-item',
+    parentName: 'el-form',
     droppable: true,
     placeholder: 'div',
     props: {
@@ -171,6 +178,7 @@ const data = [
   },
   {
     name:  'el-table-column',
+    parentName: 'el-table',
     placeholder: 'div',
     attrs: {
       prop: '',

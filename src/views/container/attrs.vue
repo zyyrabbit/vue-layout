@@ -40,6 +40,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator';
 import AttrRender from './attrRender.vue';
 import { 
   objForEach,
+  filterAttrs,
   index
 } from '@/utils';
 import { Pagination } from 'element-ui';
@@ -62,10 +63,6 @@ export default class Attrs extends Vue {
   // 属性
   get filterAttrs() {
     let attrs: string[] = [];
-    let filterAttrs: index = {
-      'config-id': true,
-       id: true
-    };
     objForEach(this.selectConfig.attrs, key => {
       if (!filterAttrs[key]) {
         attrs.push(key);

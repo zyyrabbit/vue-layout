@@ -10,21 +10,21 @@
       @contextmenu.native.stop="rightClick"
       class="leaf-container__left">
       <div class="leaf-container__tools">
-        <el-button type="text" @click="action('design')">
-          页面设计
-        </el-button>
-        <el-button type="text" @click="action('preview')">
-          预览页面
-        </el-button>
-        <el-button type="text" @click="action('code')">
-          预览代码
-        </el-button>
-        <el-button type="text" @click="action('style')">
-          编辑样式
-        </el-button>
-        <el-button type="text" @click="deleteAll">
-          全部删除
-        </el-button>
+        <a title="页面设计" @click="action('design')">
+          <svg-icon name="design" ></svg-icon>
+        </a>
+        <a title="预览页面" @click="action('preview')">
+           <svg-icon name="preview-html"></svg-icon>
+        </a>
+        <a title="预览代码" @click="action('code')">
+          <svg-icon name="preview-code"></svg-icon>
+        </a>
+        <a title="编辑样式" @click="action('style')">
+          <svg-icon name="edit"></svg-icon>
+        </a>
+        <a title="全部删除" @click="deleteAll">
+          <svg-icon name="delete"></svg-icon>
+        </a>
       </div>
       <div 
         v-if="showType === 'design' || showType === 'preview'"
@@ -145,7 +145,7 @@ export default class Container extends Vue {
     el.classList.remove('drag-over');
     if (this.showType !== 'design') return;
     let config = wrapHanlder(e);
-    this.configs.push(config);
+    config && this.configs.push(config);
   }
 
   private getSelectConfigId(e: MouseEvent) {
@@ -181,7 +181,6 @@ export default class Container extends Vue {
     &__tools {
       padding: 0 10px;
       height: 50px;
-      line-height: 50px;
       background-color:#eee;
       border-bottom: 1px solid #ddd;
       position: absolute;
@@ -190,7 +189,24 @@ export default class Container extends Vue {
       right: 0;
       z-index: 3000;
       text-align: right;
-      font-size: 20px;
+      >a {
+        display: inline-block;
+        margin-right: 20px;
+        height: 100%;
+        svg {
+          width: 30px;
+          height: 30px;
+          vertical-align: middle;
+        }
+        &::after {
+          display: inline-block;
+          content: '';
+          height: 100%;
+          width: 1px;
+          vertical-align: middle;
+        }
+      }
+    
     }
 
     &__content, &__code, &__style {
