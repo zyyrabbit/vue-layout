@@ -6,29 +6,24 @@
         <el-form-item>{{selectConfig.name}}</el-form-item>
         <!-- props -->
         <el-form-item>Props</el-form-item>
-        <el-form-item
-          v-for="(value, key) in selectConfig.props" 
-          :key="key" 
-          :label="key">
-           <attr-render 
+        <el-form-item v-for="key of filterProps" :key="key" :label="key">
+          <attr-render 
             :config="selectConfig"
             :obj-key="key"
+            @change="change($event, key)"
             type="props"
-            v-model="selectConfig.props[key]"></attr-render>
+            v-model="selectConfig.props[key]">
+          </attr-render>
         </el-form-item>
         <!-- 属性 -->
         <el-form-item>Attrs</el-form-item>
-        <!-- 暂时没找到好办法，只能 mix v-if 和 v-for -->
-        <el-form-item 
-          v-for="(value, key) in selectConfig.attrs"
-          v-if="key !== 'config-id'"
-          :key="key" 
-          :label="key">
-           <attr-render
+        <el-form-item v-for="key of filterAttrs" :key="key" :label="key">
+          <attr-render
             :config="selectConfig" 
             :obj-key="key"
             type="attrs"
-            v-model="selectConfig.attrs[key]"></attr-render>
+            v-model="selectConfig.attrs[key]">
+          </attr-render>
         </el-form-item>
         <!-- class -->
         <el-form-item>Style</el-form-item>
@@ -43,7 +38,11 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import AttrRender from './attrRender.vue';
-
+import { 
+  objForEach,
+  index
+} from '@/utils';
+import { Pagination } from 'element-ui';
 @Component({
   components: {
     AttrRender
@@ -52,6 +51,34 @@ import AttrRender from './attrRender.vue';
 export default class Attrs extends Vue {
   @Prop({ default: () => {} })
   private selectConfig!: any;
+  // props
+  get filterProps() {
+    let props: string[] = [];
+    objForEach(this.selectConfig.props, key => {
+      props.push(key);
+    })
+    return props;
+  }
+  // 属性
+  get filterAttrs() {
+    let attrs: string[] = [];
+    let filterAttrs: index = {
+      'config-id': true,
+       id: true
+    };
+    objForEach(this.selectConfig.attrs, key => {
+      if (!filterAttrs[key]) {
+        attrs.push(key);
+      }
+    })
+    return attrs;
+  }
+  // 处理prop
+  private change(val: string, key: string) {
+    if (isNaN(Number(val))) {
+      this.selectConfig.props[key] = 0;
+    }
+  }
 
 }
 </script>

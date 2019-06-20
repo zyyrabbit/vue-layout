@@ -73,6 +73,7 @@ function genPropsOrAttrsStr(obj: any, type: 'attrs' | 'props') {
 // 处理元素dom
 function dealHtmlElement(config: IComponentConfig): IComponentConfig {
   let configCopy = deepCopy(config);
+  
   configCopy.name = configCopy.attrs!.tag;
   if (configCopy.attrs!.text) {
     configCopy.children = [configCopy.attrs!.text];
@@ -82,32 +83,36 @@ function dealHtmlElement(config: IComponentConfig): IComponentConfig {
 }
 
 export const genCode = (configs: IComponentConfig[]) => {
-  let content = '';
+  let codeStr = '';
   configs.forEach((config: IComponentConfig) => {
     // 文本元素
     if (isString(getDataType(config))) {
-      content += config;
+      codeStr += config;
       return;
     }
     // 处理元素html元素Dom
     if (config.type === 'html') {
       config = dealHtmlElement(config);
     }
+
     let { name, attrs, props } = config;
-    let attrsStr = attrs ? genPropsOrAttrsStr(attrs, 'attrs') : '';
+    let attrStr = attrs ? genPropsOrAttrsStr(attrs, 'attrs') : '';
     let propsStr = props ? genPropsOrAttrsStr(props, 'props') : '';
+    
     // 处理class
     if (config.class) {
-      attrsStr += ` class="${config.class.split(',').join(' ')}"`;
+      attrStr += ` class="${config.class.split(',').join(' ')}"`;
     }
     
-    content += `<${name}${propsStr}${attrsStr}>`;
+    codeStr += `<${name}${propsStr}${attrStr}>`;
+
     if (config.children) {
-      content += genCode(config.children);
+      codeStr += genCode(config.children);
     }
-    content += `</${name}>`
+
+    codeStr += `</${name}>`
   })
-  return content;
+  return codeStr;
 }
 
 // 递归查找删除

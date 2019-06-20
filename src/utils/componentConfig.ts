@@ -190,7 +190,7 @@ const data = [
   },{
     name:  'el-pagination',
     props: {
-      total: 50,
+      total: 30,
       background: true,
     },
     attrs: {

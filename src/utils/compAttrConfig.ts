@@ -21,9 +21,14 @@ let size = {
   type: 'el-select',
   options: ['medium' , 'small', 'mini']
 }
+let tag = {
+  type: 'el-select',
+  options: ['div', 'span', 'p']
+}
 
 // 组件匹配
-const ElRow: index = { justify, align }
+const ElRow: index = { justify, align, tag }
+const ElCol: index = { tag }
 const ElForm: index = {
   'label-posiiton': {
     type: 'el-select',
@@ -56,13 +61,11 @@ const ElSlider: index = {
   }
 }
 const LeafHtml: index = {
-  tag: {
-    type: 'el-select',
-    options: ['div', 'span', 'p']
-  }
+  tag
 }
 export const attrConfig: index = {
   ElRow,
+  ElCol,
   ElForm,
   ElFormItem,
   ElInput,

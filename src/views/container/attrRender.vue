@@ -35,7 +35,7 @@ export default class ComponentRender extends Vue {
             value: option
           }
         }, null);
-      })
+      });
       return h(type, data, children);
     }
 
