@@ -7,6 +7,9 @@ export const filterAttrs: index = {
    id: true
 };
 
+export const filterProps: index = {
+  id: true
+}
 
 const common: index = { 
   boolean: 'el-switch',

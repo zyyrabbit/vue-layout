@@ -2,12 +2,13 @@
   <el-row class="leaf-container" id="leaf-container">
     <el-col
       :span="19"
+      ref="container"
       @dragenter.native.stop="dragenter"
       @dragover.native.stop="dragOver"
       @dragleave.native.stop="dragleave"
       @drop.native.stop="drop"
       @click.native.stop="selectComponet"
-      @contextmenu.native.stop="rightClick"
+      @contextmenu.native.stop="onOpenMenu($event)"
       class="leaf-container__left">
       <div class="leaf-container__tools">
         <a 
@@ -51,17 +52,22 @@
     <el-col :span="5" class="leaf-container__right">
       <attrs :select-config="selectConfig"></attrs>
     </el-col>
+     <ul v-show="menuVisible" :style="styles" class="context-menu">
+      <li @click="deleteComp">删除</li>
+      <li>复制</li>
+    </ul>
   </el-row>
 </template>
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import ComponentRender from '@/views/component/componentRender.vue';
 import CodeTree from './codeTree.vue';
 import attrs from './attrs.vue';
 import { 
   wrapHanlder, 
   breadthTraverse,
-  deleteComp
+  deleteComp,
+  guid
 } from '@/utils';
 
 @Component({
@@ -77,6 +83,12 @@ export default class Container extends Vue {
   private showType: string = 'design';
   private selectConfig: any = null;
   private css: string = '';
+  private menuVisible: boolean = false;
+  private styles: any = {
+    top: 0,
+    left: 0
+  };
+  private contextMenuSelectId: any = null;
   private tools: object[] = [
     {
       title: '页面设计',
@@ -99,6 +111,15 @@ export default class Container extends Vue {
       type: 'delete'
     }
   ]
+
+  @Watch('menuVisible')
+  onmenuVisibleChange(value: boolean) {
+    if (value) {
+      this.$refs.container.$el.addEventListener('click', this.onCloseMenu);
+    } else {
+      this.$refs.container.$el.removeEventListener('click', this.onCloseMenu);
+    }
+  }
   
   private action(showType: string) {
     this.showType = showType;
@@ -135,16 +156,6 @@ export default class Container extends Vue {
     this.selectConfig = breadthTraverse(this.configs, 'children', (item: any) => item.id === configId);
   }
 
-  private rightClick(e: MouseEvent) {
-    e.preventDefault();
-    let configId = this.getSelectConfigId(e);
-    if (!configId) return;
-    deleteComp(this.configs, configId);
-    if (this.selectConfig && configId === this.selectConfig.id) {
-      this.selectConfig = null;
-    }
-  }
-
   private  dragenter(e: DragEvent) {
     e.toElement.classList.add('drag-over');
   }
@@ -162,7 +173,7 @@ export default class Container extends Vue {
     let el: any = e.srcElement || e.target;
     el.classList.remove('drag-over');
     if (this.showType !== 'design') return;
-    let config = wrapHanlder(e);
+    let config: any = wrapHanlder(e);
     config && this.configs.push(config);
   }
 
@@ -185,6 +196,34 @@ export default class Container extends Vue {
     return configId;
   }
 
+  public onOpenMenu(e: MouseEvent) {
+    e.preventDefault();
+    this.contextMenuSelectId = this.getSelectConfigId(e);
+    if (!this.contextMenuSelectId) return;
+    const menuMinWidth = 105;
+    const {
+      left,
+      width
+    } = this.$el.getBoundingClientRect()
+    const maxLeft = width - menuMinWidth; 
+    const _left = e.clientX - left + 15;
+    this.$set(this.styles, 'left', (_left > maxLeft ? maxLeft : _left) + 'px')
+    this.$set(this.styles, 'top', e.clientY - 50 + 'px')
+    this.menuVisible = true;
+  }
+
+
+  public onCloseMenu() {
+    this.menuVisible = false;
+  }
+
+  private deleteComp() {
+    deleteComp(this.configs, this.contextMenuSelectId);
+    if (this.selectConfig && this.contextMenuSelectId === this.selectConfig.id) {
+      this.selectConfig = null;
+    }
+    this.onCloseMenu();
+  }
   
 }
 </script>
@@ -256,6 +295,26 @@ export default class Container extends Vue {
     &__code {
       padding-top: 40px;
       background-color: #fafafa;
+    }
+  }
+
+  .context-menu {
+    position: absolute;
+    z-index: 10010;
+    font-size: 12px;
+    background-color: $leaf-primary-color-white;
+    border-radius: $leaf-border-radius;
+    box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, .3);
+    li {
+      margin: 0;
+      padding: 15px 40px;
+      cursor: pointer;
+      &:hover {
+        background: #eee;
+      }
+      &:not(:last-child) {
+        border-bottom: 1px dotted #aaa;
+      }
     }
   }
 </style>

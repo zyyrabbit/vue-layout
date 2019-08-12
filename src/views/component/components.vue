@@ -1,8 +1,17 @@
 <template>
   <el-row class="leaf-components" type="flex" justify="center">
     <el-col :span="20">
-      <h3 class="leaf-components--title">组件列表</h3>
-      <div v-for="config in configs" :key="config.name"  class="leaf-components__item">
+      <div class="leaf-components__type">
+        <el-select v-model="type">
+          <el-option
+            v-for="type of types"
+            :key="type"
+            :label="type"
+            :value="type">
+          </el-option>
+        </el-select>
+      </div>
+      <div v-for="config in configs[type]" :key="config.name"  class="leaf-components__item">
         <h4 class="leaf-components__item--title">{{config.name}}</h4>
         <component-render
           :config="config"
@@ -25,6 +34,8 @@ import ComponentRender from './componentRender.vue';
 export default class Components extends Vue {
 
   private configs = configs;
+  private types: string[] = ['G2', 'Element-UI'];
+  private type: string = 'G2';
 
   private dragStart(e: any, config: any) {
     e.dataTransfer.setData('config', JSON.stringify(config));
@@ -37,8 +48,12 @@ export default class Components extends Vue {
     height: 100%;
     overflow-y: auto;
     background-color: #eee;
-    &--title {
+    &__type {
       padding-top: 20px;
+      .el-input__inner {
+        border: none!important;
+        border-bottom: 1px solid #aaa!important;
+      }
     }
     &__item {
       &--title {

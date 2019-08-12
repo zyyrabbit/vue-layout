@@ -36,7 +36,6 @@ export default class ComponentRender extends Vue {
     if (configCopy.children) {
       children = renderHanlder(h, configCopy.children);
     }
-
     return h(config.name, data , children);
   }
 }

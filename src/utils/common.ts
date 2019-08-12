@@ -144,3 +144,7 @@ export function deepCopy(obj: index, cache: any[] = []) {
   }
   return copy
 }
+
+export const genRandom = (min: number, max: number) => () => {
+  return Math.floor( Math.random() * (max - min + 1) ) + min;
+}

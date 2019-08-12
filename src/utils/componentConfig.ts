@@ -211,8 +211,23 @@ const data = [
     }
   }
 ]
-export const configs: IComponentConfig[] = [
+
+
+
+const ElementUIConfigs: IComponentConfig[] = [
   ...layout,
   ...formElement,
   ...data
 ]
+
+// G2
+const G2Configs: IComponentConfig[] = [
+  {
+    name:  'g2-bar-chart'
+  }
+];
+
+export const configs =  {
+   G2: G2Configs,
+  'Element-UI': ElementUIConfigs
+}

@@ -13,7 +13,7 @@ import { Comps } from './components/index';
 import { mixins } from './mixins/index';
 import stores from './store';
 import Element from 'element-ui';
-
+import { getComponents } from  '@/components/g2/index.ts';
 class Bootstrap {
   public router: any;
   public stores: any;
@@ -30,6 +30,12 @@ class Bootstrap {
       }
     }
 
+    let G2Comps = getComponents();
+    for (const comp of G2Comps) {
+      Vue.component(comp.name, comp);
+    }
+
+    // 自动注册
     // 注册全局混入
     for (const key in mixins) {
       Vue.mixin(mixins[key]);

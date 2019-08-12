@@ -41,6 +41,11 @@ export const wrapHanlder = function(e: DragEvent, parentConfig?: IComponentConfi
     console.error(e);
     return null;
   }
+  // 处理g2组件,添加id
+  if (config.name.indexOf('g2') > -1) {
+    (config.props || (config.props = {})).id = guid();
+  }
+
   config.id = guid();
   (config.attrs || (config.attrs = {}))['config-id'] = config.id;
   // 删除占位标志

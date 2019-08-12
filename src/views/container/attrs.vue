@@ -41,6 +41,7 @@ import AttrRender from './attrRender.vue';
 import { 
   objForEach,
   filterAttrs,
+  filterProps,
   index
 } from '@/utils';
 @Component({
@@ -55,7 +56,9 @@ export default class Attrs extends Vue {
   get filterProps() {
     let props: string[] = [];
     objForEach(this.selectConfig.props, key => {
-      props.push(key);
+      if (!filterProps[key]) {
+        props.push(key);
+      }
     })
     return props;
   }
