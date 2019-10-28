@@ -1,15 +1,16 @@
-type index = {[index: string]: any};
+type index = {[key: string]: any};
 export interface IComponentConfig {
   name: string, // 组件名称
   props?: index, // 组件props
   attrs?: index, // 组件attrs
-  children?: IComponentConfig[],
+  children?: IComponentConfig[] | string[],
   parentName?: string, // 父组件名称
   droppable?: boolean, // 组件是否可以放置元素
   id?: string,
   type?: string,
   placeholder?: string,
-  'class'?: string
+  'class'?: string,
+  layout?: index, // 用于拖拽布局
 }
 // 判断是否可以拖入生成框内
 export const specCompNamesMap: index = {
@@ -155,7 +156,7 @@ const formElement: IComponentConfig[] = [
     props: {
       value: true,
     },
-    children: ['备选项'] // 待解决ts检查报错
+    children: ['备选项']
   },
   {
     name:  'el-button',
@@ -163,7 +164,7 @@ const formElement: IComponentConfig[] = [
       type: 'primary',
       size: ''
     },
-    children: ['按钮'] // 待解决ts检查报错
+    children: ['按钮']
   }
 ]
 // Data
@@ -227,7 +228,23 @@ const G2Configs: IComponentConfig[] = [
   }
 ];
 
-export const configs =  {
+const _configs: index =  {
    G2: G2Configs,
   'Element-UI': ElementUIConfigs
 }
+
+// 设置vue-grid-layout属性
+Object.keys(_configs).forEach(typeKey => {
+  _configs[typeKey].forEach((config: IComponentConfig, index: number) => {
+    config.layout = {
+      x: 0,
+      y: 0,
+      w: 8,
+      h: 2,
+      i: -1 // 占位符
+    }
+  })
+});
+
+
+export const configs = _configs;

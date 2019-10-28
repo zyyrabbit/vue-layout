@@ -24,12 +24,32 @@
         v-if="showType === 'design' || showType === 'preview'"
         class="leaf-container__content"
         :class="{'leaf-container__content-preview': showType === 'preview'}">
-        <component-render
-          v-for="config in configs"
-          :key="config.id"
-          :config="config"
-          @focus.stop="selectComponet"> <!-- 用于处理el-select中，阻止click事件冒泡 -->
-        </component-render>
+        <grid-layout
+          :layout.sync="layout"
+          :col-num="24"
+          :row-height="30"
+          :is-draggable="true"
+          :is-resizable="true"
+          :is-mirrored="false"
+          :vertical-compact="true"
+          :margin="[10, 10]"
+          :use-css-transforms="true">
+          <grid-item 
+            v-for="config in configs"
+            :static="showType === 'preview'"
+            :x="config.layout.x"
+            :y="config.layout.y"
+            :w="config.layout.w"
+            :h="config.layout.h"
+            :i="config.layout.i"
+            :key="config.layout.i">
+            <component-render
+              :key="config.id"
+              :config="config"
+              @focus.stop="selectComponet"> <!-- 用于处理el-select中，阻止click事件冒泡 -->
+            </component-render>
+          </grid-item>
+        </grid-layout>
         <span v-if="configs.length === 0" class="leaf-container__content--intro">
           请拖拽组件进来...
         </span>
@@ -60,6 +80,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
+import VueGridLayout from 'vue-grid-layout';
 import ComponentRender from '@/views/component/componentRender.vue';
 import CodeTree from './codeTree.vue';
 import attrs from './attrs.vue';
@@ -67,14 +88,17 @@ import {
   wrapHanlder, 
   breadthTraverse,
   deleteComp,
-  guid
+  guid,
+  configs
 } from '@/utils';
 
 @Component({
   components: {
     ComponentRender,
     CodeTree,
-    attrs
+    attrs,
+    GridLayout: VueGridLayout.GridLayout,
+    GridItem: VueGridLayout.GridItem
   }
 })
 export default class Container extends Vue {
@@ -89,6 +113,7 @@ export default class Container extends Vue {
     left: 0
   };
   private contextMenuSelectId: any = null;
+  private layout: any[] = [];
   private tools: object[] = [
     {
       title: '页面设计',
@@ -174,7 +199,11 @@ export default class Container extends Vue {
     el.classList.remove('drag-over');
     if (this.showType !== 'design') return;
     let config: any = wrapHanlder(e);
-    config && this.configs.push(config);
+
+    if (config) {
+      this.configs.push(config);
+      this.layout.push(config.layout)
+    }
   }
 
   private getSelectConfigId(e: MouseEvent) {

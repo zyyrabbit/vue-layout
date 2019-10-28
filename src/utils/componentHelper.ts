@@ -47,6 +47,7 @@ export const wrapHanlder = function(e: DragEvent, parentConfig?: IComponentConfi
   }
 
   config.id = guid();
+  config.layout.i = config.id; // vue-grid-layout
   (config.attrs || (config.attrs = {}))['config-id'] = config.id;
   // 删除占位标志
   config.placeholder && delete config.placeholder;

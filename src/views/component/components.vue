@@ -35,7 +35,7 @@ export default class Components extends Vue {
 
   private configs = configs;
   private types: string[] = ['G2', 'Element-UI'];
-  private type: string = 'G2';
+  private type: string = 'Element-UI';
 
   private dragStart(e: any, config: any) {
     e.dataTransfer.setData('config', JSON.stringify(config));
