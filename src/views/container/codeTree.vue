@@ -1,5 +1,8 @@
 <template>
   <div class="leaf-code">
+     <div ref="preview" id="preview">preview</div>
+
+
     <el-button @click="save" :loading="loading.save">保存</el-button>
     <el-button @click="preview">预览页面</el-button>
 
@@ -85,10 +88,21 @@ export default class CodeTree extends Vue {
   }
 
   preview () {
+
     const compile = require('vue-template-compiler')
-    let render = compile.compileToFunctions(this.templateStr)
-    eval('var abc = 1')
+    let compiled = compile.compileToFunctions(this.templateStr)
+
+    let _options = {}
     debugger
+    eval(`_options = ${this.pageConfig.jsCode}`)
+    let options: any = {
+      el: this.$refs.preview,
+      render: compiled.render,
+      staticRenderFns: compiled.staticRenderFns,
+      ..._options
+    }
+
+    new Vue(options)
 
    // window.open('http://localhost:3000/dist/index.html')
   }

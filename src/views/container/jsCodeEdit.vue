@@ -12,14 +12,27 @@ export default class JsCodeEdit extends Vue {
   private value!: string;
 
   private defaultValue: string = `
-    created(ctx) {
+  {
+    data() {
+      return {
+        value: ''
+      }
+    },
 
+    created() {
+
+    },
+
+    mounted() {
+
+    },
+
+    methods: {
+      change(val) {
+        console.log(val)
+      }
     }
-
-    mounted(ctx) {
-
-    }
-  `
+  }`
 
   mounted() {
    
