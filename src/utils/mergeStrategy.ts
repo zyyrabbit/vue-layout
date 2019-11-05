@@ -4,7 +4,9 @@ type strategy = (target: any, origin: any) => void;
 
 const defaultMergeStrategy: index = {
   props: (target: any, origin: any) => {
-    target.props = origin.props;
+    target.props = {
+      ...origin.props
+    };
   },
   attrs: (target: any, origin: any) => {
     target.attrs = {
@@ -20,6 +22,11 @@ const defaultMergeStrategy: index = {
   },
   class: (target: any, origin: any) => {
     target.class = origin.class.split(',');
+  },
+  style: (target: any, origin: any) => {
+    target.style =  {
+      ...origin.style
+    };
   },
   on: (target: any, origin: any) => {
     if (target.on && origin.name !== 'el-select') {

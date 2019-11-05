@@ -31,6 +31,33 @@
           <div>class</div>
           <el-input v-model="selectConfig.class"></el-input>
         </el-form-item>
+        <el-form-item>
+          <div>css</div>
+          <style-layout :select-config="selectConfig"></style-layout>
+        </el-form-item>
+        <el-form-item v-if="selectConfig.action">
+          <div>动作</div>
+          <el-row>
+            <el-col :span="12">
+              <el-select v-model="action.name" placeholder="请选择动作">
+                <el-option
+                  v-for="item of selectConfig.action.names"
+                  :key="item"
+                  :label="item"
+                  :value="item"></el-option>
+              </el-select>
+            </el-col>
+            <el-col  :span="12">
+              <el-select v-model="action.method" @change="changeAction" placeholder="请选择触发函数">
+                <el-option 
+                  v-for="item of actionMethods"
+                  :key="item"
+                  :label="item"
+                  :value="item"></el-option>
+              </el-select>
+            </el-col>
+          </el-row>
+        </el-form-item>
       </el-form>
     </el-col>
   </el-row>
@@ -38,6 +65,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import AttrRender from './attrRender.vue';
+import StyleLayout from './style/layout.vue'
 import { 
   objForEach,
   filterAttrs,
@@ -46,12 +74,20 @@ import {
 } from '@/utils';
 @Component({
   components: {
-    AttrRender
+    AttrRender,
+    StyleLayout
   }
 })
 export default class Attrs extends Vue {
   @Prop({ default: () => {} })
   private selectConfig!: any;
+  // 暂时模拟
+  private action: any = {};
+  private actionMethods: any = ['change', 'blur'];
+  private changeAction() {
+    this.selectConfig.action.map[this.action.name] = this.action.method;
+  }
+
   // props
   get filterProps() {
     let props: string[] = [];

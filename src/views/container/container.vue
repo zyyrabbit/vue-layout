@@ -20,59 +20,59 @@
           <svg-icon :name="item.type"></svg-icon>
         </a>
       </div>
-      <div 
-        v-if="showType === 'design' || showType === 'preview'"
-        class="leaf-container__content"
-        :class="{'leaf-container__content-preview': showType === 'preview'}">
-        <grid-layout
-          :layout.sync="layout"
-          :col-num="24"
-          :row-height="30"
-          :is-draggable="true"
-          :is-resizable="true"
-          :is-mirrored="false"
-          :vertical-compact="true"
-          :margin="[10, 10]"
-          :use-css-transforms="true">
-          <grid-item 
-            v-for="config in configs"
-            :static="showType === 'preview'"
-            :x="config.layout.x"
-            :y="config.layout.y"
-            :w="config.layout.w"
-            :h="config.layout.h"
-            :i="config.layout.i"
-            :key="config.layout.i">
-            <component-render
-              :key="config.id"
-              :config="config"
-              @focus.stop="selectComponet"> <!-- 用于处理el-select中，阻止click事件冒泡 -->
-            </component-render>
-          </grid-item>
-        </grid-layout>
-        <span v-if="configs.length === 0" class="leaf-container__content--intro">
-          请拖拽组件进来...
-        </span>
-      </div>
-      <code-tree 
-        v-else-if="showType === 'code'"
-        :css="css"
-        :configs="configs" 
-        class="leaf-container__code"></code-tree>
-      <div v-else class="leaf-container__style">
-        <el-input
-          type="textarea"
-          @blur="addUserStyle"
-          :autosize="{ minRows: 15, maxRows: 100 }"
-          placeholder=".leaf-designer{ ... }"
-          v-model="css">
-        </el-input>
+      <div class="leaf-container__main">
+        <div 
+          v-if="showType === 'design' || showType === 'preview'"
+          class="leaf-container__content"
+          :class="{'leaf-container__content-preview': showType === 'preview'}">
+        <!--  <grid-layout
+            :layout.sync="layout"
+            :col-num="24"
+            :row-height="30"
+            :is-draggable="true"
+            :is-resizable="false"
+            :is-mirrored="false"
+            :vertical-compact="true"
+            :margin="[0, 0]"
+            :use-css-transforms="true">
+            <grid-item 
+              v-for="config in pageConfig.configs"
+              :static="showType === 'preview'"
+              :x="config.layout.x"
+              :y="config.layout.y"
+              :w="config.layout.w"
+              :h="config.layout.h"
+              :i="config.layout.i"
+              :key="config.layout.i"> -->
+              <component-render
+                v-for="config in pageConfig.configs"
+                :key="config.id"
+                :config="config"
+                @focus.stop="selectComponet"> <!-- 用于处理el-select中，阻止click事件冒泡 -->
+              </component-render>
+          <!--  </grid-item>
+          </grid-layout>  -->
+          <span 
+            v-if="pageConfig.configs.length === 0 && showType !== 'preview'" 
+            class="leaf-container__content--intro">
+            请拖拽组件进来...
+          </span>
+        </div>
+        <code-tree 
+          v-else-if="showType === 'code'"
+          :page-config="pageConfig"
+          class="leaf-container__main-code"></code-tree>
+        <!-- js代码编辑 -->
+        <js-code-edit v-else-if="showType === 'js-edit'" v-model="pageConfig.jsCode"></js-code-edit>
+        <!-- css代码编辑 -->
+        <css-code-edit v-else v-model="pageConfig.cssCode"></css-code-edit>
       </div>
     </el-col>
+
     <el-col :span="5" class="leaf-container__right">
       <attrs :select-config="selectConfig"></attrs>
     </el-col>
-     <ul v-show="menuVisible" :style="styles" class="context-menu">
+    <ul v-show="menuVisible" :style="styles" class="context-menu">
       <li @click="deleteComp">删除</li>
       <li>复制</li>
     </ul>
@@ -84,12 +84,14 @@ import VueGridLayout from 'vue-grid-layout';
 import ComponentRender from '@/views/component/componentRender.vue';
 import CodeTree from './codeTree.vue';
 import attrs from './attrs.vue';
+import JsCodeEdit from './jsCodeEdit.vue';
+import CssCodeEdit from './cssCodeEdit.vue';
+
 import { 
   wrapHanlder, 
   breadthTraverse,
   deleteComp,
-  guid,
-  configs
+  guid
 } from '@/utils';
 
 @Component({
@@ -97,15 +99,24 @@ import {
     ComponentRender,
     CodeTree,
     attrs,
+    JsCodeEdit,
+    CssCodeEdit,
     GridLayout: VueGridLayout.GridLayout,
     GridItem: VueGridLayout.GridItem
   }
 })
 export default class Container extends Vue {
-  private configs: any[] = [];
 
   private showType: string = 'design';
   private selectConfig: any = null;
+  private prevSelectEl: any = null;
+
+  private pageConfig: any = {
+    configs: [],
+    jsCode: '',
+    cssCode: ''
+  }
+
   private css: string = '';
   private menuVisible: boolean = false;
   private styles: any = {
@@ -129,7 +140,11 @@ export default class Container extends Vue {
     },
     {
       title: '编辑样式',
-      type: 'style'
+      type: 'css-edit'
+    },
+    {
+      title: '编辑js',
+      type: 'js-edit'
     },
     {
       title: '全部删除',
@@ -154,34 +169,26 @@ export default class Container extends Vue {
   }
 
   private deleteAll() {
-    this.configs = [];
+    this.pageConfig.configs = [];
     this.selectConfig && (this.selectConfig = null);
     this.showType = 'design';
   }
 
-  private addUserStyle() {
-    if (!this.css) return;
-    let style: any = document.getElementById('custom-layout');
-    if (!style) {
-      style = document.createElement('style');
-      style.id = 'custom-layout';
-      style.setAttribute('scoped', '');
-      style.type = 'text/css';
-      let container = document.getElementById('leaf-container');
-      container!.appendChild(style);
-    }
-    let cssText = document.createTextNode(this.css);
-    style.innerHTML = '';
-    style.appendChild(cssText);
-  }
-
   private selectComponet(e: MouseEvent) {
-    let configId = this.getSelectConfigId(e);
+    let { configId, currentEle } = this.getSelectConfigId(e);
+
+    if (this.prevSelectEl) {
+      this.prevSelectEl.style.border = '';
+    }
+
     if (!configId) return;
-    this.selectConfig = breadthTraverse(this.configs, 'children', (item: any) => item.id === configId);
+    currentEle.style!.border = '2px solid #fccfb9';
+
+    this.selectConfig = breadthTraverse(this.pageConfig.configs, 'children', (item: any) => item.id === configId);
+    this.prevSelectEl = currentEle;
   }
 
-  private  dragenter(e: DragEvent) {
+  private  dragenter(e: any) {
     e.toElement.classList.add('drag-over');
   }
 
@@ -189,7 +196,7 @@ export default class Container extends Vue {
     e.preventDefault();
   }
 
-  private  dragleave(e: DragEvent) {
+  private  dragleave(e: any) {
     e.toElement.classList.remove('drag-over');
   }
 
@@ -197,11 +204,12 @@ export default class Container extends Vue {
   private drop(e: DragEvent) {
     let el: any = e.srcElement || e.target;
     el.classList.remove('drag-over');
+
     if (this.showType !== 'design') return;
     let config: any = wrapHanlder(e);
 
     if (config) {
-      this.configs.push(config);
+      this.pageConfig.configs.push(config);
       this.layout.push(config.layout)
     }
   }
@@ -222,12 +230,16 @@ export default class Container extends Vue {
       let ElTableHiddenColumns = currentEle.getElementsByClassName('hidden-columns')[0];
       ElTableHiddenColumns && (configId = ElTableHiddenColumns.children[cellIndex].getAttribute('config-id'));
     }
-    return configId;
+    return {
+      configId,
+      currentEle,
+    }
   }
 
   public onOpenMenu(e: MouseEvent) {
     e.preventDefault();
-    this.contextMenuSelectId = this.getSelectConfigId(e);
+    let { configId } = this.getSelectConfigId(e);
+    this.contextMenuSelectId = configId;
     if (!this.contextMenuSelectId) return;
     const menuMinWidth = 105;
     const {
@@ -247,7 +259,7 @@ export default class Container extends Vue {
   }
 
   private deleteComp() {
-    deleteComp(this.configs, this.contextMenuSelectId);
+    deleteComp(this.pageConfig.configs, this.contextMenuSelectId);
     if (this.selectConfig && this.contextMenuSelectId === this.selectConfig.id) {
       this.selectConfig = null;
     }
@@ -300,12 +312,16 @@ export default class Container extends Vue {
     
     }
 
-    &__content, &__code, &__style {
+    &__main, &__main-code {
       height: 100%;
       overflow-y: auto;
     }
 
-    &__content, &__style {
+    &__main-code {
+      background-color: #fafafa;
+    }
+
+    &__main {
       padding-top: 50px;
     }
 
@@ -321,10 +337,7 @@ export default class Container extends Vue {
       }
     }
 
-    &__code {
-      padding-top: 40px;
-      background-color: #fafafa;
-    }
+    
   }
 
   .context-menu {

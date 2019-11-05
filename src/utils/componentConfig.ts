@@ -1,16 +1,19 @@
 type index = {[key: string]: any};
 export interface IComponentConfig {
-  name: string, // 组件名称
-  props?: index, // 组件props
-  attrs?: index, // 组件attrs
-  children?: IComponentConfig[] | string[],
-  parentName?: string, // 父组件名称
-  droppable?: boolean, // 组件是否可以放置元素
-  id?: string,
-  type?: string,
-  placeholder?: string,
-  'class'?: string,
-  layout?: index, // 用于拖拽布局
+  name: string; // 组件名称
+  props?: index; // 组件props
+  attrs?: index; // 组件attrs
+  children?: IComponentConfig[] | string[];
+  parentName?: string; // 父组件名称
+  droppable?: boolean; // 组件是否可以放置元素
+  id?: string;
+  type?: string;
+  placeholder?: string;
+  'class'?: string;
+  action?: index; // 组件触发动作
+  style?: index;
+  el?: HTMLElement;
+  layout?: index; // 用于拖拽布局
 }
 // 判断是否可以拖入生成框内
 export const specCompNamesMap: index = {
@@ -113,6 +116,10 @@ const formElement: IComponentConfig[] = [
   },
   {
     name:  'el-input',
+    action: {
+      names: ['blur', 'change'],
+      map: {}
+    },
     props: {
       value: '',
       clearable: false,
@@ -233,15 +240,20 @@ const _configs: index =  {
   'Element-UI': ElementUIConfigs
 }
 
-// 设置vue-grid-layout属性
+// 设置vue-grid-layout style属性
 Object.keys(_configs).forEach(typeKey => {
   _configs[typeKey].forEach((config: IComponentConfig, index: number) => {
     config.layout = {
       x: 0,
       y: 0,
-      w: 8,
+      w: 24,
       h: 2,
       i: -1 // 占位符
+    }
+    
+    config.style = {
+      marginTop: '0',
+     // width: '200px',
     }
   })
 });

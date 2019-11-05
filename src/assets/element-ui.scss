@@ -46,10 +46,13 @@
   .el-row, .el-col, .el-container, #plain-html-layout,
   .el-form, .el-form-item, .leaf-placeholder {
     @include row-col;
+    /* &:hover {
+      border: 2px #fccfb9 dotted;
+    } */
   }
 }
 
-.leaf-container__style {
+.leaf-container__main {
   .el-textarea__inner {
     border-color: #fff;
     font-size: 20px;
@@ -63,7 +66,13 @@
   .el-form, .el-form-item, .leaf-placeholder {
     padding: 30px 0;
   }
+
+  .no-empty {
+    border: none !important;
+    padding: 0 !important;
+  }
 }
+
 /* 预览样式覆盖 */
 .leaf-container__content-preview {
   .el-row, .el-col, .el-container, #plain-html-layout,
@@ -72,4 +81,6 @@
     padding: 0;
   }
 }
+
+
 

@@ -16,6 +16,7 @@ export default class ComponentRender extends Vue {
 
   render(h: typeof Vue.prototype.$createElement, context: any): VNode {
     let { props: { config }, data, children } = context;
+    
     // 如果有占位标志，则生成占位元素
     if (config.placeholder) {
        return h(config.placeholder, {

@@ -9,6 +9,7 @@ import {
   isString,
   deepCopy,
   specCompNamesMap,
+  dumpToHyphenate,
 } from  '@/utils'
 import { MessageBox } from 'element-ui';
 
@@ -47,6 +48,8 @@ export const wrapHanlder = function(e: DragEvent, parentConfig?: IComponentConfi
   }
 
   config.id = guid();
+  config.class = `${config.name}_${config.id}`;
+
   config.layout.i = config.id; // vue-grid-layout
   (config.attrs || (config.attrs = {}))['config-id'] = config.id;
   // 删除占位标志
@@ -76,7 +79,7 @@ export const wrapHanlder = function(e: DragEvent, parentConfig?: IComponentConfi
 }
 
 // 代码生成
-function genPropsOrAttrsStr(obj: any, type: 'attrs' | 'props') {
+function genPropsOrAttrsStr(obj: any, type: 'attrs' | 'props' | 'style' | 'action', compName?: string) {
   let str = '';
   objForEach(obj, (key, value) => {
     // 属性去掉config-id
@@ -84,9 +87,18 @@ function genPropsOrAttrsStr(obj: any, type: 'attrs' | 'props') {
 
     if (type === 'attrs') {
       str += ` ${key}="${value}"`;
-    } else {
-      str += ` :${key}="${value}"`;
-    }
+    } else if (type === 'props') {
+      // TODO 待优化解决
+      if (compName === 'el-input' && key==='value') {
+        str += ` v-model="value"`;
+      } else {
+        str += ` :${key}="${value}"`;
+      }
+    } else if (type === 'action') {
+        str += ` @${key}="${value}"`;
+    } else if (type === 'style'){
+      str += `${dumpToHyphenate(key)}:${value};`;
+    } 
   })
   return str;
 }
@@ -102,7 +114,7 @@ function dealHtmlElement(config: IComponentConfig): IComponentConfig {
   return configCopy;
 }
 
-export const genCode = (configs: IComponentConfig[]) => {
+export const genTemplateCode = (configs: IComponentConfig[]) => {
   let codeStr = '';
   configs.forEach((config: IComponentConfig) => {
     // 文本元素
@@ -115,22 +127,41 @@ export const genCode = (configs: IComponentConfig[]) => {
       config = dealHtmlElement(config);
     }
 
-    let { name, attrs, props } = config;
+    let { name, attrs, props, action } = config;
     let attrStr = attrs ? genPropsOrAttrsStr(attrs, 'attrs') : '';
-    let propsStr = props ? genPropsOrAttrsStr(props, 'props') : '';
-    
+    let propsStr = props ? genPropsOrAttrsStr(props, 'props', name) : '';
+    let actionStr = action ?  genPropsOrAttrsStr(action.map, 'action') : '';
     // 处理class
     if (config.class) {
       attrStr += ` class="${config.class.split(',').join(' ')}"`;
     }
     
-    codeStr += `<${name}${propsStr}${attrStr}>`;
+    codeStr += `<${name}${propsStr}${actionStr}${attrStr}>`;
 
     if (config.children) {
-      codeStr += genCode(config.children);
+      codeStr += genTemplateCode(config.children as IComponentConfig[]);
     }
 
     codeStr += `</${name}>`
+  })
+  return codeStr;
+}
+
+export const genStyleCode = (configs: IComponentConfig[]) => {
+  let codeStr = '';
+  configs.forEach((config: IComponentConfig) => {
+
+    let { name, style } = config;
+  
+    // 处理class
+    if (style) {
+      codeStr += `.${config.class} { ${genPropsOrAttrsStr(style, 'style')} }`;
+    }
+
+    if (config.children) {
+      codeStr += genStyleCode(config.children as IComponentConfig[]);
+    }
+
   })
   return codeStr;
 }

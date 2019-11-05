@@ -16,7 +16,7 @@ import container from '@/views/container/container.vue';
 @Component({
   components: {
     components,
-    container
+    container,
   }
 })
 export default class Main extends Vue {
@@ -27,7 +27,7 @@ export default class Main extends Vue {
     height: 100%;
     &__left,  &__content {
       height: 100%;
-      overflow-y: auto;
+      overflow-y: hidden;
     }
   }
 </style>

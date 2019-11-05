@@ -1,4 +1,5 @@
 const path = require('path');
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 module.exports = {
   chainWebpack: config => {
@@ -19,6 +20,11 @@ module.exports = {
     config.plugins.delete('prefetch');
     config.plugins.delete('preload');
     config.plugins.delete('fork-ts-checker');
+    // 添加插件
+    config.plugin('monaco').use(MonacoWebpackPlugin, [{
+      languages:['javascript'],
+      features:['coreCommands']
+    }])
   },
   productionSourceMap: false,
   outputDir: 'dist',
@@ -32,6 +38,13 @@ module.exports = {
     overlay: {
       warnings: true,
       errors: true,
+    },
+    proxy: {
+      '/': {
+        ws: false,
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+      }
     },
   },
   css: {

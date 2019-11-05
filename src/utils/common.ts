@@ -15,9 +15,11 @@ export const isString = (data: any) => data === 'string';
 
 
 // 下划线转驼峰
-export const underlineToDump = (str: string) => str.replace(/-(\w)/g, function(match: string, pos: string) {
-    return  pos.toUpperCase();
-  })
+export const underlineToDump = (str: string) => str.replace(/-(\w)/g, (match: string, pos: string) => pos.toUpperCase())
+
+// 驼峰转下划线
+export const dumpToHyphenate = (str: string) => str.replace(/\B([A-Z])/g, '-$1').toLowerCase()
+
 // 首字母大写
 export const capital = (str: string) => str.replace(/^\w/, function(word: string) {
   return  word.toUpperCase();
