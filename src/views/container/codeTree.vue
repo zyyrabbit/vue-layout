@@ -33,7 +33,11 @@ export default class CodeTree extends Vue {
   }
 
   get templateStr() {
-    let templateStr = `<template><div class="template">${genTemplateCode(this.pageConfig.configs)}</div></template>`;
+    let templateStr = `
+      <div class="template">
+        ${genTemplateCode(this.pageConfig.configs)}
+      </div>
+    `;
     // 简单处理删除一些代码
     templateStr = templateStr.replace(/:?[\w-_]+=(""|"0")/g, '');
     templateStr = templateStr.replace(/:(\w+)="([^"]*)"/g, (match, $1, $2) => {
@@ -81,7 +85,12 @@ export default class CodeTree extends Vue {
   }
 
   preview () {
-    window.open('http://localhost:3000/dist/index.html')
+    const compile = require('vue-template-compiler')
+    let render = compile.compileToFunctions(this.templateStr)
+    eval('var abc = 1')
+    debugger
+
+   // window.open('http://localhost:3000/dist/index.html')
   }
 
   private async save() {
