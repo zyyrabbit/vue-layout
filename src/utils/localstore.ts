@@ -6,7 +6,7 @@ export const setItem = (key: string, value: any) => {
 export const getItem = (key: string) => {
   let r = ''
   try {
-    r = JSON.parse(localStorage.getItem(key));
+    r = JSON.parse(localStorage.getItem(key) as string);
   } catch (e) {
   }
   return r
@@ -19,7 +19,7 @@ export const setSessionItem = (key: string, value: any) => {
 export const getSessionItem = (key: string) => {
   let r = ''
   try {
-    r = JSON.parse(sessionStorage.getItem(key));
+    r = JSON.parse(sessionStorage.getItem(key) as string);
   } catch (e) {
   }
   return r

@@ -1,6 +1,6 @@
-import { 
+import {
   index
-} from '@/utils';
+} from '@/utils/index.d'
 // 过来属性配置
 export const filterAttrs: index = {
   'config-id': true,

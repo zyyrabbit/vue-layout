@@ -1,6 +1,10 @@
 
-import { objForEach, index } from '@/utils';
-type strategy = (target: any, origin: any) => void;
+import { objForEach } from '@/utils';
+
+import {
+  strategy,
+  index
+} from '@/utils/index.d'
 
 const defaultMergeStrategy: index = {
   props: (target: any, origin: any) => {

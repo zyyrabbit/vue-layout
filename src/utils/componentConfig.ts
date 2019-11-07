@@ -1,20 +1,8 @@
-type index = {[key: string]: any};
-export interface IComponentConfig {
-  name: string; // 组件名称
-  props?: index; // 组件props
-  attrs?: index; // 组件attrs
-  children?: IComponentConfig[] | string[];
-  parentName?: string; // 父组件名称
-  droppable?: boolean; // 组件是否可以放置元素
-  id?: string;
-  type?: string;
-  placeholder?: string;
-  'class'?: string;
-  action?: index; // 组件触发动作
-  style?: index;
-  el?: HTMLElement;
-  layout?: index; // 用于拖拽布局
-}
+import {
+  index,
+  IComponentConfig,
+} from '@/utils/index.d'
+
 // 判断是否可以拖入生成框内
 export const specCompNamesMap: index = {
   'el-form-item': 'el-form',

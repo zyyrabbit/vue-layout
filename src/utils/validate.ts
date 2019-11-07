@@ -1,4 +1,6 @@
-export type Reg = { [index: string]: RegExp };
+import {
+  Reg
+} from '@/utils/index.d'
 /**
  *
  * @desc 正则表达式集中管理

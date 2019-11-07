@@ -12,7 +12,6 @@ export default class JsCodeEdit extends Vue {
   private value!: string;
 
   private defaultValue: string = `
-  {
     data() {
       return {
         value: ''
@@ -31,8 +30,7 @@ export default class JsCodeEdit extends Vue {
       change(val) {
         console.log(val)
       }
-    }
-  }`
+    }`
 
   mounted() {
    

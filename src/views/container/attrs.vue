@@ -70,8 +70,13 @@ import {
   objForEach,
   filterAttrs,
   filterProps,
-  index
+  
 } from '@/utils';
+
+import {
+  index
+} from '@/utils/index.d';
+
 @Component({
   components: {
     AttrRender,

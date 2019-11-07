@@ -1,6 +1,7 @@
-export type index = {[index: string]: any}
-export type callback = (key: string, value?: any, index?: number) => void
-
+import {
+  index,
+  callback
+} from '@/utils/index.d'
 // 获取数据类型
 export const getDataType = (data: any) => {
   if (typeof data !== 'object') {

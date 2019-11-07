@@ -22,9 +22,8 @@
       </div>
       <div class="leaf-container__main">
         <div 
-          v-if="showType === 'design' || showType === 'preview'"
-          class="leaf-container__content"
-          :class="{'leaf-container__content-preview': showType === 'preview'}">
+          v-if="showType === 'design'"
+          class="leaf-container__content">
         <!--  <grid-layout
             :layout.sync="layout"
             :col-num="24"
@@ -53,15 +52,15 @@
           <!--  </grid-item>
           </grid-layout>  -->
           <span 
-            v-if="pageConfig.configs.length === 0 && showType !== 'preview'" 
+            v-if="pageConfig.configs.length === 0" 
             class="leaf-container__content--intro">
             请拖拽组件进来...
           </span>
         </div>
-        <code-tree 
-          v-else-if="showType === 'code'"
+        <preview 
+          v-else-if="showType === 'preview'"
           :page-config="pageConfig"
-          class="leaf-container__main-code"></code-tree>
+          class="leaf-container__main-code"></preview>
         <!-- js代码编辑 -->
         <js-code-edit v-else-if="showType === 'js-edit'" v-model="pageConfig.jsCode"></js-code-edit>
         <!-- css代码编辑 -->
@@ -80,9 +79,8 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
-import VueGridLayout from 'vue-grid-layout';
 import ComponentRender from '@/views/component/componentRender.vue';
-import CodeTree from './codeTree.vue';
+import Preview from './preview.vue';
 import attrs from './attrs.vue';
 import JsCodeEdit from './jsCodeEdit.vue';
 import CssCodeEdit from './cssCodeEdit.vue';
@@ -94,10 +92,12 @@ import {
   guid
 } from '@/utils';
 
+const VueGridLayout = require('vue-grid-layout');
+
 @Component({
   components: {
     ComponentRender,
-    CodeTree,
+    Preview,
     attrs,
     JsCodeEdit,
     CssCodeEdit,
@@ -133,10 +133,6 @@ export default class Container extends Vue {
     {
       title: '预览页面',
       type: 'preview'
-    },
-    {
-      title: '预览代码',
-      type: 'code'
     },
     {
       title: '编辑样式',
