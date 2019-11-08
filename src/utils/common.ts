@@ -66,10 +66,22 @@ export const throtter = function(fn: Function, fre: number) {
     }
   }
 }
+
 // 对象数组过滤
-export function find(ary: Array<any>, fn: (value: any, index: number, array: any[]) => any) {
+export function find<T> (ary: Array<T>, fn: (value: T, index?: number, array?: T[]) => T) {
   return ary.filter(fn)[0]
 }
+
+ // 对象数组删除
+ export function aryDelete<T> (ary: Array<T>, fn: (value: T, index?: number, array?: T[]) => boolean): boolean {
+  return ary.some((item: T, index: number) => {
+    if (fn(item, index, ary)) {
+      ary.splice(index, 1);
+      return true;
+    }
+  })
+}
+
 
 const primitive = [
   'null',

@@ -2,13 +2,8 @@
   <el-row class="leaf-container" id="leaf-container">
     <el-col
       :span="19"
-      ref="container"
-      @dragenter.native.stop="dragenter"
-      @dragover.native.stop="dragOver"
-      @dragleave.native.stop="dragleave"
-      @drop.native.stop="drop"
-      @click.native.stop="selectComponet"
-      @contextmenu.native.stop="onOpenMenu($event)"
+       ref="container"
+       
       class="leaf-container__left">
       <div class="leaf-container__tools">
         <a 
@@ -21,8 +16,15 @@
         </a>
       </div>
       <div class="leaf-container__main">
-        <div 
-          v-if="showType === 'design'"
+          
+        <div
+          v-show = "showType === 'design'"
+          @dragenter.stop="dragenter"
+          @dragover.stop="dragOver"
+          @dragleave.stop="dragleave"
+          @drop.stop="drop"
+          @click.stop="selectComponet"
+          @contextmenu.stop="onOpenMenu($event)"
           class="leaf-container__content">
         <!--  <grid-layout
             :layout.sync="layout"
@@ -52,19 +54,21 @@
           <!--  </grid-item>
           </grid-layout>  -->
           <span 
-            v-if="pageConfig.configs.length === 0" 
+            v-show="pageConfig.configs.length === 0" 
             class="leaf-container__content--intro">
             请拖拽组件进来...
           </span>
         </div>
-        <preview 
-          v-else-if="showType === 'preview'"
-          :page-config="pageConfig"
-          class="leaf-container__main-code"></preview>
+
         <!-- js代码编辑 -->
-        <js-code-edit v-else-if="showType === 'js-edit'" v-model="pageConfig.jsCode"></js-code-edit>
+        <js-code-edit v-show="showType === 'js-edit'" v-model="pageConfig.jsCode"></js-code-edit>
+
         <!-- css代码编辑 -->
-        <css-code-edit v-else v-model="pageConfig.cssCode"></css-code-edit>
+        <css-code-edit v-show="showType === 'css-edit'" v-model="pageConfig.cssCode"></css-code-edit>
+
+        <!-- 预览页面 -->
+        <preview v-if="showType === 'preview'" :page-config="pageConfig" class="leaf-container__main-code"></preview>
+     
       </div>
     </el-col>
 
@@ -86,11 +90,18 @@ import JsCodeEdit from './jsCodeEdit.vue';
 import CssCodeEdit from './cssCodeEdit.vue';
 
 import { 
-  wrapHanlder, 
+  configHanlder, 
   breadthTraverse,
-  deleteComp,
-  guid
+  deleteCompByConfigId,
+  guid,
+  handleDropEvent
 } from '@/utils';
+
+import { 
+  IComponentConfig,
+  ConfigOrNull,
+} from '@/utils/index.d';
+
 
 const VueGridLayout = require('vue-grid-layout');
 
@@ -159,7 +170,7 @@ export default class Container extends Vue {
   
   private action(showType: string) {
     this.showType = showType;
-    if(showType === 'delete') {
+    if (showType === 'delete') {
       this.deleteAll();
     }
   }
@@ -171,8 +182,9 @@ export default class Container extends Vue {
   }
 
   private selectComponet(e: MouseEvent) {
+    
     let { configId, currentEle } = this.getSelectConfigId(e);
-
+    // 处理边框样式
     if (this.prevSelectEl) {
       this.prevSelectEl.style.border = '';
     }
@@ -184,26 +196,23 @@ export default class Container extends Vue {
     this.prevSelectEl = currentEle;
   }
 
-  private  dragenter(e: any) {
+  private dragenter(e: any) {
     e.toElement.classList.add('drag-over');
   }
 
-  private  dragOver(e: DragEvent) {
+  private dragOver(e: DragEvent) {
     e.preventDefault();
   }
 
-  private  dragleave(e: any) {
+  private dragleave(e: any) {
     e.toElement.classList.remove('drag-over');
   }
 
   // 松开拖放e是容器元素
   private drop(e: DragEvent) {
-    let el: any = e.srcElement || e.target;
-    el.classList.remove('drag-over');
-
-    if (this.showType !== 'design') return;
-    let config: any = wrapHanlder(e);
-
+    let config: ConfigOrNull = handleDropEvent(e);
+    if (!config) return;
+    configHanlder(config, null);
     if (config) {
       this.pageConfig.configs.push(config);
       this.layout.push(config.layout)
@@ -214,7 +223,7 @@ export default class Container extends Vue {
     e.stopPropagation();
     let el: any = e.srcElement || e.target,
         configId = el.getAttribute('config-id'),
-        cellIndex = el.cellIndex; // 处理element-ui table 和 table-column-item特殊情况
+        cellIndex = el.cellIndex; // 处理element-ui table 和 table-column-item 特殊情况
     // 处理触发事件不是组件根元素情况
     let currentEle = el;
     while(!configId && currentEle.parentElement) {
@@ -255,7 +264,7 @@ export default class Container extends Vue {
   }
 
   private deleteComp() {
-    deleteComp(this.pageConfig.configs, this.contextMenuSelectId);
+    deleteCompByConfigId(this.pageConfig.configs, this.contextMenuSelectId);
     if (this.selectConfig && this.contextMenuSelectId === this.selectConfig.id) {
       this.selectConfig = null;
     }
@@ -322,6 +331,8 @@ export default class Container extends Vue {
     }
 
     &__content {
+      width: 100%;
+      height: 100%;
       &--intro {
         position: absolute;
         top: 50%;

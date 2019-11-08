@@ -27,12 +27,12 @@ export default class ComponentRender extends Vue {
            draggable: 'true'
          },
          'class': {
-            'leaf-placeholder': true
+            'leaf-placeholder': true,
           }
        } , null);
     }
     // 深度复制
-    let configCopy =  deepCopy(config);
+    let configCopy = deepCopy(config);
     mergeStrategy(data, configCopy);
     if (configCopy.children) {
       children = renderHanlder(h, configCopy.children);

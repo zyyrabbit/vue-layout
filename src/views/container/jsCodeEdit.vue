@@ -33,7 +33,7 @@ export default class JsCodeEdit extends Vue {
     }`
 
   mounted() {
-   
+
     const monacoInstance = monaco.editor.create(this.$refs.monaco as any, {
       value: this.value || this.defaultValue,
       language: 'javascript',
@@ -46,7 +46,7 @@ export default class JsCodeEdit extends Vue {
       const newValue = monacoInstance.getValue();
       this.$emit('input', newValue)
     })
-    // monacoInstance.dispose();//使用完成销毁实例
+    // monacoInstance.dispose(); // 使用完成销毁实例
   }
 }
 </script>

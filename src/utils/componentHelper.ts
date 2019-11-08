@@ -10,6 +10,7 @@ import {
 
 import {
   IComponentConfig,
+  ConfigOrNull,
 } from '@/utils/index.d';
 
 import { MessageBox } from 'element-ui';
@@ -33,34 +34,38 @@ export const renderHanlder = function(h: typeof Vue.prototype.$createElement, co
   return children;
 }
 
-export const wrapHanlder = function(e: DragEvent, parentConfig?: IComponentConfig): IComponentConfig | null {
+export function handleDropEvent(e: DragEvent): ConfigOrNull {
   // 阻止冒泡
   e.stopPropagation();
-  let config: any;
+  let el: any = e.srcElement || e.target;
+  el.classList.remove('drag-over');
+  let config: IComponentConfig;
   try {
     config = JSON.parse(e.dataTransfer!.getData('config')) || {};
   } catch(e) {
     console.error(e);
     return null;
   }
-  // 处理g2组件,添加id
-  if (config.name.indexOf('g2') > -1) {
-    (config.props || (config.props = {})).id = guid();
-  }
+  return config;
+}
 
+export const configHanlder = function(config: ConfigOrNull, parentConfig: ConfigOrNull): ConfigOrNull {
+  
+  if (!config) return null;
+
+  config.parent = parentConfig;
   config.id = guid();
   config.class = `${config.name}_${config.id}`;
-
-  config.layout.i = config.id; // vue-grid-layout
+  config.layout && (config.layout.i = config.id); // vue-grid-layout
   (config.attrs || (config.attrs = {}))['config-id'] = config.id;
+
   // 删除占位标志
   config.placeholder && delete config.placeholder;
   // 利用闭包--需要确定一下闭包是否泄漏
   let listener = {
     drop: (e: DragEvent) => {
-      let el: any = e.srcElement || e.target;
-      el.classList.remove('drag-over');
-      wrapHanlder(e, config);
+      const childConfig = handleDropEvent(e);
+      configHanlder(childConfig, config);
     }
   };
   // 处理原生html
@@ -69,8 +74,14 @@ export const wrapHanlder = function(e: DragEvent, parentConfig?: IComponentConfi
   } else if (config.droppable) {
     config.nativeOn = listener;
   }
+
+  // 处理g2组件,添加id
+  if (config.name.indexOf('g2') > -1) {
+    (config.props || (config.props = {})).id = guid();
+  }
+
   // 处理嵌套样式
-  if (config.droppable && parentConfig && parentConfig!.class.indexOf('no-border') < 0) {
+  if (parentConfig && config.droppable && parentConfig.class.indexOf('no-border') < 0) {
     parentConfig!.class += ' no-border';
   }
 
@@ -81,22 +92,24 @@ export const wrapHanlder = function(e: DragEvent, parentConfig?: IComponentConfi
     MessageBox.alert(`组件${config.name}, 只能拖入${specCompNamesMap[config.name]}`);
     return null;
   }
+
   parentConfig && parentConfig.children!.push(config);
+
   return config;
 }
 
 // 递归查找删除
-export const deleteComp = (configs: IComponentConfig[], configId: string, parentConfig?: IComponentConfig) => {
+export const deleteCompByConfigId = (configs: IComponentConfig[], configId: string, parentConfig?: IComponentConfig) => {
   configs.some((config: IComponentConfig, index: number) => {
     if (config.id === configId) {
       configs.splice(index, 1);
-      if (parentConfig && parentConfig.class.indexOf('no-border') > 0) {
-        parentConfig.class = parentConfig.class.replace(/no\-border/, '')
+      if (parentConfig && parentConfig.class!.indexOf('no-border') > 0) {
+        parentConfig.class = parentConfig.class!.replace(/no\-border/, '')
       }
       return true;
     }
     if (config.children) {
-      return deleteComp(config.children, configId, config);
+      return deleteCompByConfigId(config.children, configId, config);
     }
     return false;
   })

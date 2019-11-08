@@ -34,7 +34,7 @@ import ComponentRender from './componentRender.vue';
 export default class Components extends Vue {
 
   private configs = configs;
-  private types: string[] = ['G2', 'Element-UI'];
+  private types: string[] = ['Element-UI', 'G2', 'HTML'];
   private type: string = 'Element-UI';
 
   private dragStart(e: any, config: any) {
