@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import createLogger from 'vuex/dist/logger';
 import theme from './stores/modules/theme';
+import config from './stores/modules/config';
 
 const DEBUG = process.env.NODE_ENV === 'development';
 
@@ -16,7 +17,8 @@ module.keys().forEach(v => {
 
 export default new Vuex.Store({
   modules: Object.assign({}, modules, {
-    theme
+    theme,
+    config
   }),
   strict: DEBUG,
   plugins: DEBUG ? [createLogger({})] : [],

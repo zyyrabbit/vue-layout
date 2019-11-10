@@ -14,6 +14,7 @@ import { mixins } from './mixins/index';
 import stores from './store';
 import Element from 'element-ui';
 import { getComponents } from  '@/components/g2/index.ts';
+
 class Bootstrap {
   public router: any;
   public stores: any;

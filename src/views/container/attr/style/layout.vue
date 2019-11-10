@@ -30,16 +30,13 @@ export default class StyleLayout extends Vue {
   }
 
   private styleLayout(attr: string) {
-    let { style, layout } = this.selectConfig;
+    let { style } = this.selectConfig;
     let attrVal = style[attr] ? parseInt(style[attr]) : 0;
     style[attr] = `${(++attrVal)}px`;
   }
 }
 </script>
 <style lang="scss" scoped>
-.leaf-style-layout {
-  margin-top: 20px;
-}
 .leaf-style-margin {
   position: relative;
 

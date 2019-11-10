@@ -18,7 +18,7 @@
       <div class="leaf-container__main">
           
         <div
-          v-show = "showType === 'design'"
+          v-if = "showType === 'design'"
           @dragenter.stop="dragenter"
           @dragover.stop="dragOver"
           @dragleave.stop="dragleave"
@@ -61,13 +61,13 @@
         </div>
 
         <!-- js代码编辑 -->
-        <js-code-edit v-show="showType === 'js-edit'" v-model="pageConfig.jsCode"></js-code-edit>
+        <js-code-edit v-else-if="showType === 'js-edit'" v-model="pageConfig.jsCode"></js-code-edit>
 
         <!-- css代码编辑 -->
-        <css-code-edit v-show="showType === 'css-edit'" v-model="pageConfig.cssCode"></css-code-edit>
+        <css-code-edit v-else-if="showType === 'css-edit'" v-model="pageConfig.cssCode"></css-code-edit>
 
         <!-- 预览页面 -->
-        <preview v-if="showType === 'preview'" :page-config="pageConfig" class="leaf-container__main-code"></preview>
+        <preview v-else :page-config="pageConfig" class="leaf-container__main-code"></preview>
      
       </div>
     </el-col>
@@ -85,9 +85,9 @@
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import ComponentRender from '@/views/component/componentRender.vue';
 import Preview from './preview.vue';
-import attrs from './attrs.vue';
-import JsCodeEdit from './jsCodeEdit.vue';
-import CssCodeEdit from './cssCodeEdit.vue';
+import attrs from './attr/index.vue';
+import JsCodeEdit from './code/jsCodeEdit.vue';
+import CssCodeEdit from './code/cssCodeEdit.vue';
 
 import { 
   configHanlder, 
@@ -190,7 +190,7 @@ export default class Container extends Vue {
     }
 
     if (!configId) return;
-    currentEle.style!.border = '2px solid #fccfb9';
+    currentEle.style!.border = '1px solid #fccfb9';
 
     this.selectConfig = breadthTraverse(this.pageConfig.configs, 'children', (item: any) => item.id === configId);
     this.prevSelectEl = currentEle;

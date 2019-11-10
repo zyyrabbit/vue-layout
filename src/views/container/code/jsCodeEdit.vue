@@ -33,9 +33,13 @@ export default class JsCodeEdit extends Vue {
     }`
 
   mounted() {
+    
+    const value = this.value || this.defaultValue
+    
+    this.$emit('input', value);
 
     const monacoInstance = monaco.editor.create(this.$refs.monaco as any, {
-      value: this.value || this.defaultValue,
+      value,
       language: 'javascript',
       minimap: {
         enabled: false

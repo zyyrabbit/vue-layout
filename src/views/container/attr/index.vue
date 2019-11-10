@@ -1,12 +1,15 @@
 <template>
   <el-row type="flex" justify="center" class="leaf-attrs">
-    <el-col :span="20">
-      <h3 class="leaf-attrs--title">属性编辑</h3>
-      <el-form v-if="selectConfig">
-        <el-form-item>{{selectConfig.name}}</el-form-item>
+
+    <el-col v-if="selectConfig" :span="20">
+      
+      <h3 class="leaf-attrs--title">{{selectConfig.name}}</h3>
+
+      <el-form>
+        <el-form-item>属性编辑</el-form-item>
         <!-- props -->
-        <el-form-item>Props</el-form-item>
-        <el-form-item v-for="key of filterProps" :key="key" :label="key">
+        <el-form-item v-for="key of filterProps" :key="key">
+          <div>{{key}}</div>
           <attr-render 
             :config="selectConfig"
             :obj-key="key"
@@ -16,8 +19,8 @@
           </attr-render>
         </el-form-item>
         <!-- 属性 -->
-        <el-form-item>Attrs</el-form-item>
-        <el-form-item v-for="key of filterAttrs" :key="key" :label="key">
+        <el-form-item v-for="key of filterAttrs" :key="key">
+          <div>{{key}}</div>
           <attr-render
             :config="selectConfig" 
             :obj-key="key"
@@ -25,73 +28,59 @@
             v-model="selectConfig.attrs[key]">
           </attr-render>
         </el-form-item>
+      </el-form>
+
+      <el-form>
+        <el-form-item>样式编辑</el-form-item>
         <!-- class -->
-        <el-form-item>Style</el-form-item>
         <el-form-item>
-          <div>class</div>
+          <div>自定义类名</div>
           <el-input v-model="selectConfig.class"></el-input>
         </el-form-item>
         <el-form-item>
-          <div>css</div>
+          <div>布局</div>
           <style-layout :select-config="selectConfig"></style-layout>
         </el-form-item>
+      </el-form>
+
+      <el-form>
         <el-form-item v-if="selectConfig.action">
           <div>动作</div>
-          <el-row>
-            <el-col :span="12">
-              <el-select v-model="action.name" placeholder="请选择动作">
-                <el-option
-                  v-for="item of selectConfig.action.names"
-                  :key="item"
-                  :label="item"
-                  :value="item"></el-option>
-              </el-select>
-            </el-col>
-            <el-col  :span="12">
-              <el-select v-model="action.method" @change="changeAction" placeholder="请选择触发函数">
-                <el-option 
-                  v-for="item of actionMethods"
-                  :key="item"
-                  :label="item"
-                  :value="item"></el-option>
-              </el-select>
-            </el-col>
-          </el-row>
+          <action :select-config="selectConfig">></action>
         </el-form-item>
       </el-form>
     </el-col>
+
+    <el-col v-else :span="24" class="leaf-attrs--no-select">未选中组件</el-col>
+
   </el-row>
+  
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import AttrRender from './attrRender.vue';
-import StyleLayout from './style/layout.vue'
+import StyleLayout from './style/layout.vue';
+import Action from './action.vue';
 import { 
   objForEach,
   filterAttrs,
   filterProps,
-  
 } from '@/utils';
 
 import {
-  index
+  index,
 } from '@/utils/index.d';
 
 @Component({
   components: {
     AttrRender,
-    StyleLayout
+    StyleLayout,
+    Action
   }
 })
 export default class Attrs extends Vue {
   @Prop({ default: () => {} })
   private selectConfig!: any;
-  // 暂时模拟
-  private action: any = {};
-  private actionMethods: any = ['change', 'blur'];
-  private changeAction() {
-    this.selectConfig.action.map[this.action.name] = this.action.method;
-  }
 
   // props
   get filterProps() {
@@ -130,6 +119,10 @@ export default class Attrs extends Vue {
     overflow-y: auto;
     &--title {
       padding: 20px 0;
+    }
+    &--no-select {
+      text-align: center;
+      padding-top: 200px;
     }
   }
 </style>

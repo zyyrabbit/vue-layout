@@ -31,14 +31,17 @@ export default class Preview extends Vue {
   private pageConfig!: PageConfig;
 
   mounted () {
-    if (!this.pageConfig.jsCode) return
+    
     
     const vueCompile = require('vue-template-compiler');
     const templateStr = genTemplateStr(this.pageConfig);
     const compiled = vueCompile.compileToFunctions(templateStr);
-   
-    const genOptions = compileToFunction(this.pageConfig, templateStr);
-    let _options = genOptions();
+    
+    let _options = {};
+    if (this.pageConfig.jsCode) {
+      const genOptions = compileToFunction(this.pageConfig, templateStr);
+      _options = genOptions();
+    }
    
     let options: any = {
       el: this.$refs.preview,

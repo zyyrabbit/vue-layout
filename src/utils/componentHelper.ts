@@ -81,7 +81,7 @@ export const configHanlder = function(config: ConfigOrNull, parentConfig: Config
   }
 
   // 处理嵌套样式
-  if (parentConfig && config.droppable && parentConfig.class.indexOf('no-border') < 0) {
+  if (parentConfig && parentConfig.droppable && parentConfig.class.indexOf('no-border') < 0) {
     parentConfig!.class += ' no-border';
   }
 
