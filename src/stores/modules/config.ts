@@ -11,7 +11,26 @@ const state: index = {
   selectConfig: null,
   pageConfig: {
     configs: [],
-    jsCode: '',
+    jsCode: `
+      data() {
+        return {
+          value: ''
+        }
+      },
+
+      created() {
+
+      },
+
+      mounted() {
+
+      },
+
+      methods: {
+        change(val) {
+          console.log(val)
+        }
+      }`,
     cssCode: ''
   }
 };

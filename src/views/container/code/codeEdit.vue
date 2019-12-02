@@ -7,23 +7,26 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js';
 import 'monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution';
 
 @Component
-export default class JsCodeEdit extends Vue {
+export default class codeEdit extends Vue {
   @Prop({default: ''}) 
   private value!: string;
 
-  private defaultValue: string = ''
+  @Prop({default: ''}) 
+  private language!: string;
 
-  private monacoInstance: any
+  private defaultValue: string = '';
+
+  private monacoInstance: any;
 
   mounted() {
-    
-    const value = this.value || this.defaultValue
+    debugger
+    const value = this.value || this.defaultValue;
     
     this.$emit('input', value);
 
     this.monacoInstance = monaco.editor.create(this.$refs.monaco as any, {
       value,
-      language: 'javascript',
+      language: this.language,
       minimap: {
         enabled: false
       }

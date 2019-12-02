@@ -12,15 +12,11 @@ import {
   IComponentConfig,
 } from '@/utils/index.d'
 
-
-const pretty = require('pretty');
-
 export function genTemplateStr(pageConfig: PageConfig) {
   let templateStr = `
     <div class="template">
       ${genTemplateCode(pageConfig.configs)}
-    </div>
-  `;
+    </div>`;
   // 简单处理删除一些代码
   templateStr = templateStr.replace(/:?[\w-_]+=(""|"0")/g, '');
   templateStr = templateStr.replace(/:(\w+)="([^"]*)"/g, (match, $1, $2) => {
@@ -29,7 +25,7 @@ export function genTemplateStr(pageConfig: PageConfig) {
     }
     return `:${$1}="${$1}"`;
   });
-  return pretty(templateStr);
+  return templateStr;
 }
 
 export function compileToFunction(pageConfig: PageConfig, templateStr: string) {
@@ -43,15 +39,29 @@ export function compileToFunction(pageConfig: PageConfig, templateStr: string) {
 
 export function genJsStr(pageConfig: PageConfig, templateStr?: string) {
   const jsStr = `${pageConfig.jsCode}`;
-  return pretty(jsStr);
+  return jsStr;
 }
 
 export function genCssStr(pageConfig: PageConfig) {
-  const cssStr = `
+  const cssCode = `
     ${pageConfig.cssCode}
     ${genStyleCode(pageConfig.configs) || ''}`;
 
-  return pretty(cssStr);
+  return cssCode;
+}
+
+
+export function dealTemplateVar(templateStr: string) {
+  const pattern = /:(\w+)="([^"]*)"/g;
+  let ret,
+      result = [];
+  while((ret = pattern.exec(templateStr)) != null) {
+    if (/false|true|[0-9]+/.test(ret[2])) continue;
+    result.push(ret[1]);   
+  }
+  return result.map((key: string) => {
+    return `${key}: '',`;
+  }).join('');
 }
 
 function genStyleCode(configs: IComponentConfig[]) {
@@ -104,19 +114,6 @@ function genTemplateCode(configs: IComponentConfig[]) {
     codeStr += `</${name}>`
   })
   return codeStr;
-}
-
-function dealTemplateVar(templateStr: string) {
-  let pattern = /:(\w+)="([^"]*)"/g,
-      ret,
-      result = [];
-  while((ret = pattern.exec(templateStr)) != null) {
-    if (/false|true|[0-9]+/.test(ret[2])) continue;
-    result.push(ret[1]);   
-  }
-  return result.map((key: string) => {
-    return `private ${key}: any;`;
-  }).join('');
 }
 
 // 代码生成

@@ -1,43 +1,51 @@
 <template>
-   <div class="leaf-css-code-dit">
-      <el-input
-        type="textarea"
-        @blur="addUserStyle"
-        :autosize="{ minRows: 15, maxRows: 100 }"
-        placeholder=".leaf-designer{ ... }"
-        v-model="value">
-      </el-input>
-    </div>
+  <div ref="monaco" id="monaco"></div>
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api.js';
+import 'monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution';
 
 @Component
 export default class cssCodeEdit extends Vue {
-  @Prop()
+  @Prop({default: ''}) 
   private value!: string;
 
-  private addUserStyle() {
-    if (!this.value) return;
-    let style: any = document.getElementById('custom-layout');
-    if (!style) {
-      style = document.createElement('style');
-      style.id = 'custom-layout';
-      style.setAttribute('scoped', '');
-      style.type = 'text/css';
-      let container = document.getElementById('leaf-container');
-      container!.appendChild(style);
-    }
-    let cssText = document.createTextNode(this.value);
-    style.innerHTML = '';
-    style.appendChild(cssText);
+  private defaultValue: string = '';
+
+  private monacoInstance: any;
+
+  mounted() {
+    
+    const value = this.value || this.defaultValue;
+    
+    this.$emit('input', value);
+
+    this.monacoInstance = monaco.editor.create(this.$refs.monaco as any, {
+      value,
+      language: 'css',
+      minimap: {
+        enabled: false
+      }
+    });
+
+    this.monacoInstance.onDidBlurEditorText(() => {
+      const newValue = this.monacoInstance.getValue();
+      this.$emit('input', newValue)
+    })
+    
+  }
+
+  beforeDestory() {
+    this.monacoInstance.dispose(); // 使用完成销毁实例
   }
 }
 </script>
 <style lang="scss">
-.leaf-css-code-dit {
-  background-color: #fff;
-  border: none;
+#monaco {
+  padding: 10px;
+  height: 100%;
+  position: relative;
+  overflow-y: hidden;
 }
 </style>

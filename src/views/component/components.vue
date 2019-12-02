@@ -11,13 +11,27 @@
           </el-option>
         </el-select>
       </div>
-      <div v-for="config in configs[type]" :key="config.name"  class="leaf-components__item">
-        <h4 class="leaf-components__item--title">{{config.name}}</h4>
-        <component-render
+      <div class="leaf-components__comps">
+        <div 
+          v-for="config in configs[type]" 
+          :key="config.name" 
           :config="config"
           draggable="true"
-          @dragstart.native="dragStart($event, config)">
-       </component-render>
+          @dragstart="dragStart($event, config)"
+          class="leaf-components__item">
+          <div class="leaf-components__item--icon">
+            <svg-icon name="layout"></svg-icon>
+          </div>
+          <h4 class="leaf-components__item--title">{{config.name}}</h4>
+
+        <!--  <h4 class="leaf-components__item--title">{{config.name}}</h4>
+          <component-render
+            :config="config"
+            draggable="true"
+            @dragstart.native="dragStart($event, config)">
+        </component-render> -->
+
+        </div>
       </div>
     </el-col>
   </el-row>
@@ -55,13 +69,32 @@ export default class Components extends Vue {
         border-bottom: 1px solid #aaa!important;
       }
     }
+
     &__item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 2px dotted #ccc;
+      margin-top: 20px;
+      cursor: move;
+      background: #fff;
+
+      &--icon {
+       
+        >svg {
+          width: 60px;
+          height: 60px;
+        }
+        
+      }
+
       &--title {
         line-height: 40px;
       }
-      margin-top: 20px;
+
       &:last-child {
-         margin-bottom: 20px;
+        margin-bottom: 20px;
       }
     }
   }

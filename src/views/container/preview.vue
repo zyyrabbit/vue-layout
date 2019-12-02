@@ -1,29 +1,31 @@
 <template>
-  <div class="leaf-code">
-  
-    <div ref="preview" id="preview"></div>
 
+  <div class="leaf-code" id="leaf-code">
+    <div ref="preview" id="preview"></div>
   </div>
+
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { genTemplateStr, compileToFunction }  from '@/utils';
+import { genTemplateStr, compileToFunction, genCssStr }  from '@/utils';
 import {
   PageConfig
 } from '@/utils/index.d';
 import { Getter } from 'vuex-class';
 import tempApi from '@/api/template';
+const vueCompile = require('vue-template-compiler');
 
 @Component
 export default class Preview extends Vue {
 
   @Getter('config/pageConfig')
-  private pageConfig!: any;
+  private pageConfig!: PageConfig;
 
   mounted () {
     
+    // 加载样式
+    this.addUserStyle();
     
-    const vueCompile = require('vue-template-compiler');
     const templateStr = genTemplateStr(this.pageConfig);
     const compiled = vueCompile.compileToFunctions(templateStr);
     
@@ -41,8 +43,28 @@ export default class Preview extends Vue {
     };
 
     new Vue(options);
+   
 
    // window.open('http://localhost:3000/dist/index.html')
+  }
+
+  private addUserStyle() {
+    const cssCode = genCssStr(this.pageConfig)
+    if (!cssCode) return;
+    let style: any = document.getElementById('custom-layout');
+    if (!style) {
+      style = document.createElement('style');
+      style.id = 'custom-layout';
+      style.setAttribute('scoped', '');
+      style.type = 'text/css';
+      const container = document.getElementById('leaf-code');
+      container!.appendChild(style);
+    }
+    
+    const cssText = document.createTextNode(cssCode);
+    style.innerHTML = '';
+    style.appendChild(cssText);
+
   }
 }
 </script>

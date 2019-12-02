@@ -61,13 +61,13 @@
         </div>
 
         <!-- js代码编辑 -->
-        <js-code-edit v-else-if="showType === 'js-edit'" v-model="pageConfig.jsCode"></js-code-edit>
+        <code-edit v-else-if="showType === 'js-edit'" language="javascript" v-model="pageConfig.jsCode"></code-edit>
 
         <!-- css代码编辑 -->
-        <css-code-edit v-else-if="showType === 'css-edit'" v-model="pageConfig.cssCode"></css-code-edit>
+        <code-edit v-else-if="showType === 'css-edit'" language="css" v-model="pageConfig.cssCode"></code-edit>
 
         <!-- 预览页面 -->
-        <preview v-else-if="showType === 'css-edit'" class="leaf-container__main-code"></preview>
+        <preview v-else-if="showType === 'preview'" class="leaf-container__main-code"></preview>
 
         <!-- 预览页面代码 -->
         <preview-code v-else></preview-code>
@@ -88,9 +88,10 @@
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import ComponentRender from '@/views/component/componentRender.vue';
 import Preview from './preview.vue';
+import PreviewCode from './preview-code.vue';
 import attrs from './attr/index.vue';
-import JsCodeEdit from './code/jsCodeEdit.vue';
-import CssCodeEdit from './code/cssCodeEdit.vue';
+import codeEdit from './code/codeEdit.vue';
+
 import { Getter } from 'vuex-class';
 
 import { 
@@ -113,8 +114,8 @@ const VueGridLayout = require('vue-grid-layout');
     ComponentRender,
     Preview,
     attrs,
-    JsCodeEdit,
-    CssCodeEdit,
+    codeEdit,
+    PreviewCode,
     GridLayout: VueGridLayout.GridLayout,
     GridItem: VueGridLayout.GridItem
   }
@@ -148,7 +149,7 @@ export default class Container extends Vue {
     },
     {
       title: '预览页面代码',
-      type: 'preview-code'
+      type: 'code'
     },
     {
       title: '编辑样式',
