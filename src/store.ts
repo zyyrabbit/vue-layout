@@ -20,6 +20,6 @@ export default new Vuex.Store({
     theme,
     config
   }),
-  strict: DEBUG,
+//  strict: DEBUG,
   plugins: DEBUG ? [createLogger({})] : [],
 });

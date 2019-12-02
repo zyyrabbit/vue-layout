@@ -3,18 +3,6 @@
   
     <div ref="preview" id="preview"></div>
 
-   <!--  <pre v-highlightjs="templateStr">
-      <code class="html"></code>
-    </pre>
-     
-    <pre v-highlightjs="jsStr">
-      <code class="javascript"></code>
-    </pre>
-
-    <pre v-highlightjs="cssStr">
-      <code class="css"></code>
-    </pre> -->
-
   </div>
 </template>
 <script lang="ts">
@@ -23,12 +11,14 @@ import { genTemplateStr, compileToFunction }  from '@/utils';
 import {
   PageConfig
 } from '@/utils/index.d';
+import { Getter } from 'vuex-class';
 import tempApi from '@/api/template';
 
 @Component
 export default class Preview extends Vue {
-  @Prop({ default: () => {} })
-  private pageConfig!: PageConfig;
+
+  @Getter('config/pageConfig')
+  private pageConfig!: any;
 
   mounted () {
     

@@ -19,11 +19,16 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { VNode } from 'vue';
+import { Getter } from 'vuex-class';
+import {
+  index,
+  IComponentConfig,
+} from '@/utils/index.d';
 
 @Component
 export default class StyleLayout extends Vue {
-  @Prop({ default: () => {} })
-  private selectConfig!: any;
+  @Getter('config/selectConfig')
+  private selectConfig!: IComponentConfig;
 
   get styleAttrs() {
     return Object.keys(this.selectConfig.style)

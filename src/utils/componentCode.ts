@@ -41,13 +41,13 @@ export function compileToFunction(pageConfig: PageConfig, templateStr: string) {
     }`)
 }
 
-export function genJsStr(pageConfig: PageConfig, templateStr: string) {
-  let jsStr = `${pageConfig.jsCode}`;
+export function genJsStr(pageConfig: PageConfig, templateStr?: string) {
+  const jsStr = `${pageConfig.jsCode}`;
   return pretty(jsStr);
 }
 
 export function genCssStr(pageConfig: PageConfig) {
-  let cssStr = `
+  const cssStr = `
     ${pageConfig.cssCode}
     ${genStyleCode(pageConfig.configs) || ''}`;
 

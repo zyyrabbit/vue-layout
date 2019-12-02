@@ -28,7 +28,7 @@ module.exports = {
   },
   productionSourceMap: false,
   outputDir: 'dist',
-  baseUrl: '/',
+  baseUrl: '',
   assetsDir: '',
   devServer: {
     contentBase: path.join(__dirname, 'public'),

@@ -67,13 +67,16 @@
         <css-code-edit v-else-if="showType === 'css-edit'" v-model="pageConfig.cssCode"></css-code-edit>
 
         <!-- 预览页面 -->
-        <preview v-else :page-config="pageConfig" class="leaf-container__main-code"></preview>
+        <preview v-else-if="showType === 'css-edit'" class="leaf-container__main-code"></preview>
+
+        <!-- 预览页面代码 -->
+        <preview-code v-else></preview-code>
      
       </div>
     </el-col>
 
     <el-col :span="5" class="leaf-container__right">
-      <attrs :select-config="selectConfig"></attrs>
+      <attrs></attrs>
     </el-col>
     <ul v-show="menuVisible" :style="styles" class="context-menu">
       <li @click="deleteComp">删除</li>
@@ -88,11 +91,11 @@ import Preview from './preview.vue';
 import attrs from './attr/index.vue';
 import JsCodeEdit from './code/jsCodeEdit.vue';
 import CssCodeEdit from './code/cssCodeEdit.vue';
+import { Getter } from 'vuex-class';
 
 import { 
   configHanlder, 
   breadthTraverse,
-  deleteCompByConfigId,
   guid,
   handleDropEvent
 } from '@/utils';
@@ -118,15 +121,13 @@ const VueGridLayout = require('vue-grid-layout');
 })
 export default class Container extends Vue {
 
-  private showType: string = 'design';
-  private selectConfig: any = null;
-  private prevSelectEl: any = null;
+  @Getter('config/selectConfig')
+  private selectConfig!: IComponentConfig;
+  @Getter('config/pageConfig')
+  private pageConfig!: any;
 
-  private pageConfig: any = {
-    configs: [],
-    jsCode: '',
-    cssCode: ''
-  }
+  private showType: string = 'design';
+  private prevSelectEl: any = null;
 
   private css: string = '';
   private menuVisible: boolean = false;
@@ -144,6 +145,10 @@ export default class Container extends Vue {
     {
       title: '预览页面',
       type: 'preview'
+    },
+    {
+      title: '预览页面代码',
+      type: 'preview-code'
     },
     {
       title: '编辑样式',
@@ -176,8 +181,8 @@ export default class Container extends Vue {
   }
 
   private deleteAll() {
-    this.pageConfig.configs = [];
-    this.selectConfig && (this.selectConfig = null);
+    this.$store.dispatch('config/clearAll');
+    this.$store.dispatch('config/setSelectConfig', null);
     this.showType = 'design';
   }
 
@@ -192,7 +197,10 @@ export default class Container extends Vue {
     if (!configId) return;
     currentEle.style!.border = '1px solid #fccfb9';
 
-    this.selectConfig = breadthTraverse(this.pageConfig.configs, 'children', (item: any) => item.id === configId);
+    const selectConfig = breadthTraverse(this.pageConfig.configs, 'children', (item: any) => item.id === configId);
+    
+    this.$store.dispatch('config/setSelectConfig', selectConfig)
+    
     this.prevSelectEl = currentEle;
   }
 
@@ -214,8 +222,8 @@ export default class Container extends Vue {
     if (!config) return;
     configHanlder(config, null);
     if (config) {
-      this.pageConfig.configs.push(config);
-      this.layout.push(config.layout)
+      this.$store.dispatch('config/addConfig', config);
+      this.layout.push(config.layout);
     }
   }
 
@@ -264,9 +272,9 @@ export default class Container extends Vue {
   }
 
   private deleteComp() {
-    deleteCompByConfigId(this.pageConfig.configs, this.contextMenuSelectId);
+    this.$store.dispatch('config/deleteById', this.contextMenuSelectId);
     if (this.selectConfig && this.contextMenuSelectId === this.selectConfig.id) {
-      this.selectConfig = null;
+      this.$store.dispatch('config/setSelectConfig', null);
     }
     this.onCloseMenu();
   }

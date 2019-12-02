@@ -61,6 +61,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator';
 import AttrRender from './attrRender.vue';
 import StyleLayout from './style/layout.vue';
 import Action from './action.vue';
+import { Getter } from 'vuex-class';
 import { 
   objForEach,
   filterAttrs,
@@ -69,6 +70,7 @@ import {
 
 import {
   index,
+  IComponentConfig,
 } from '@/utils/index.d';
 
 @Component({
@@ -79,8 +81,8 @@ import {
   }
 })
 export default class Attrs extends Vue {
-  @Prop({ default: () => {} })
-  private selectConfig!: any;
+  @Getter('config/selectConfig')
+  private selectConfig!: IComponentConfig;
 
   // props
   get filterProps() {
