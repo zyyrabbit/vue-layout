@@ -1,10 +1,10 @@
 <template>
+
   <el-row type="flex" justify="center" class="leaf-attrs">
 
     <el-col v-if="selectConfig" :span="20">
       
       <h3 class="leaf-attrs--title">{{selectConfig.name}}</h3>
-
       <el-form>
         <el-form-item>属性编辑</el-form-item>
         <!-- props -->
@@ -49,6 +49,7 @@
           <action :select-config="selectConfig">></action>
         </el-form-item>
       </el-form>
+
     </el-col>
 
     <el-col v-else :span="24" class="leaf-attrs--no-select">未选中组件</el-col>
@@ -86,7 +87,7 @@ export default class Attrs extends Vue {
 
   // props
   get filterProps() {
-    let props: string[] = [];
+    const props: string[] = [];
     objForEach(this.selectConfig.props, key => {
       if (!filterProps[key]) {
         props.push(key);
@@ -96,7 +97,7 @@ export default class Attrs extends Vue {
   }
   // 属性
   get filterAttrs() {
-    let attrs: string[] = [];
+    const attrs: string[] = [];
     objForEach(this.selectConfig.attrs, key => {
       if (!filterAttrs[key]) {
         attrs.push(key);
@@ -104,9 +105,10 @@ export default class Attrs extends Vue {
     })
     return attrs;
   }
+
   // 处理prop
   private change(val: string, key: string) {
-    if (isNaN(Number(val))) {
+    if (isNaN(Number(val)) && this.selectConfig) {
       this.selectConfig.props[key] = 0;
     }
   }

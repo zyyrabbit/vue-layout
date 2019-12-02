@@ -17,28 +17,45 @@ const common: index = {
   number: 'el-input'
 }
 // 枚举
-let justify = {
+const justify = {
   type: 'el-select',
   options: ['start', 'end', 'center', 'space-around', 'space-between']
 }
 
-let align = {
+const align = {
   type: 'el-select',
   options: ['top', 'middle', 'bottom']
 }
 
-let size = {
+const size = {
   type: 'el-select',
   options: ['medium' , 'small', 'mini']
 }
-let tag = {
+const tag = {
   type: 'el-select',
   options: ['div', 'span', 'p']
 }
 
+const colSlider = {
+  type: 'el-slider',
+  min: 0,
+  max: 24
+}
+
 // 组件匹配
-const ElRow: index = { justify, align, tag }
-const ElCol: index = { tag }
+const ElRow: index = { 
+  justify, 
+  align, 
+  tag
+}
+const ElCol: index = { 
+  tag,
+  span: colSlider,
+  offset: colSlider,
+  push: colSlider,
+  pull: colSlider,
+}
+
 const ElForm: index = {
   'label-posiiton': {
     type: 'el-select',

@@ -19,7 +19,7 @@ export default class codeEdit extends Vue {
   private monacoInstance: any;
 
   mounted() {
-    debugger
+    
     const value = this.value || this.defaultValue;
     
     this.$emit('input', value);

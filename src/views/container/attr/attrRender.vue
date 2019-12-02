@@ -6,7 +6,8 @@ import {
   attrConfig,
   objForEach,
   underlineToCapitalDump,
-  isNumber
+  isNumber,
+  handlerAttrs
 } from '@/utils';
 
 @Component({
@@ -20,29 +21,24 @@ export default class ComponentRender extends Vue {
 
   render(h: typeof Vue.prototype.$createElement, context: any): VNode {
     let { props: { config, objKey }, data } = context,
-      name = config.name,
-      type = data.attrs.type || 'props',
-      value = config[type][objKey];
+      name = config.name, // 组件名称
+      type = data.attrs.type || 'props', // props or attrs
+      value = config[type][objKey]; // 属性值
+ 
+    name = underlineToCapitalDump(name); // 驼峰以及首字母大写
 
-    name = underlineToCapitalDump(name);
+    const specConfig = attrConfig[name] && attrConfig[name][objKey];
+    
     // 先匹配特殊属性
-    if (attrConfig[name] && attrConfig[name][objKey]) {
-      let { type, options } =  attrConfig[name][objKey];
-      let children = options.map((option: any) => {
-        return h('el-option', {
-          props: {
-            label: option,
-            value: option
-          }
-        }, null);
-      });
-      return h(type, data, children);
+    if (specConfig) {
+      return handlerAttrs(h, specConfig, data);
     }
 
-    let dataType = getDataType(value);
+    // 以下为普通类型
+    const dataType = getDataType(value);
     // 特殊处理prop为number类型
     if (isNumber(dataType)) {
-      let input = data.on.input;
+      const input = data.on.input;
       data.on.input = function($$v: string) {
         input(Number($$v));
       }

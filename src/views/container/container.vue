@@ -3,7 +3,6 @@
     <el-col
       :span="19"
        ref="container"
-       
       class="leaf-container__left">
       <div class="leaf-container__tools">
         <a 
@@ -61,13 +60,23 @@
         </div>
 
         <!-- js代码编辑 -->
-        <code-edit v-else-if="showType === 'js-edit'" language="javascript" v-model="pageConfig.jsCode"></code-edit>
+        <code-edit 
+          v-else-if="showType === 'js-edit'" 
+          key="js-edit" 
+          language="javascript"  
+          v-model="pageConfig.jsCode"></code-edit>
 
         <!-- css代码编辑 -->
-        <code-edit v-else-if="showType === 'css-edit'" language="css" v-model="pageConfig.cssCode"></code-edit>
+        <code-edit 
+          v-else-if="showType === 'css-edit'" 
+          key="css-edit" 
+          language="css"  
+          v-model="pageConfig.cssCode"></code-edit>
 
         <!-- 预览页面 -->
-        <preview v-else-if="showType === 'preview'" class="leaf-container__main-code"></preview>
+        <preview 
+          v-else-if="showType === 'preview'" 
+          class="leaf-container__main-code"></preview>
 
         <!-- 预览页面代码 -->
         <preview-code v-else></preview-code>

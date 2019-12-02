@@ -70,21 +70,31 @@ export default class Components extends Vue {
       }
     }
 
-    &__item {
+    &__comps {
       display: flex;
-      flex-direction: column;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: center;
-      border: 2px dotted #ccc;
-      margin-top: 20px;
+    }
+
+    &__item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 80%;
+      margin-top: 10px;
+      border: 2px dotted #ddd;
+     
       cursor: move;
       background: #fff;
+      padding: 0 10px;
+     
 
       &--icon {
-       
         >svg {
-          width: 60px;
-          height: 60px;
+          vertical-align: middle;
+          width: 20px;
+          height: 20px;
         }
         
       }
