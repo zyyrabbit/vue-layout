@@ -1,9 +1,9 @@
 <template>
   <el-row class="leaf-main">
-    <el-col :span="4" class="leaf-main__left">
+    <el-col :span="5" class="leaf-main__left">
       <components/>
     </el-col>
-    <el-col :span="20" class="leaf-main__content">
+    <el-col :span="19" class="leaf-main__content">
       <container/>
     </el-col>
   </el-row>

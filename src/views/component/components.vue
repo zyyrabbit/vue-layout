@@ -74,16 +74,18 @@ export default class Components extends Vue {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
     }
 
     &__item {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: space-between;
-      width: 80%;
+      justify-content: center;
+      width: 40%;
+      height: 60px;
       margin-top: 10px;
-      border: 2px dotted #ddd;
+      border: 1px solid #ddd;
      
       cursor: move;
       background: #fff;
@@ -91,20 +93,13 @@ export default class Components extends Vue {
      
 
       &--icon {
+        
         >svg {
           vertical-align: middle;
           width: 20px;
           height: 20px;
         }
         
-      }
-
-      &--title {
-        line-height: 40px;
-      }
-
-      &:last-child {
-        margin-bottom: 20px;
       }
     }
   }

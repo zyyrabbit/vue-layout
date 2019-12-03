@@ -7,7 +7,7 @@
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { genTemplateStr, compileToFunction, genCssStr }  from '@/utils';
+import { genTemplateStr, compileToOptions, genCssStr }  from '@/utils';
 import {
   PageConfig
 } from '@/utils/index.d';
@@ -28,18 +28,16 @@ export default class Preview extends Vue {
     const templateStr = genTemplateStr(this.pageConfig);
     const compiled = vueCompile.compileToFunctions(templateStr);
     
-    let _options = {};
+    let genOptions = {};
     if (this.pageConfig.jsCode) {
-      const genOptions = compileToFunction(this.pageConfig, templateStr);
-      _options = genOptions();
-      debugger
+      genOptions = compileToOptions(this.pageConfig, templateStr);
     }
    
     const options: any = {
       el: this.$refs.preview,
       render: compiled.render,
       staticRenderFns: compiled.staticRenderFns,
-      ..._options
+      ...genOptions
     };
 
     new Vue(options);

@@ -1,7 +1,7 @@
 <template>
   <el-row class="leaf-container" id="leaf-container">
     <el-col
-      :span="19"
+      :span="18"
        ref="container"
       class="leaf-container__left">
       <div class="leaf-container__tools">
@@ -84,7 +84,7 @@
       </div>
     </el-col>
 
-    <el-col :span="5" class="leaf-container__right">
+    <el-col :span="6" class="leaf-container__right">
       <attrs></attrs>
     </el-col>
     <ul v-show="menuVisible" :style="styles" class="context-menu">

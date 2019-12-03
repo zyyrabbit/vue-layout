@@ -19,6 +19,7 @@ export function genTemplateStr(pageConfig: PageConfig) {
     </div>`;
   // 简单处理删除一些代码
   templateStr = templateStr.replace(/:?[\w-_]+=(""|"0")/g, '');
+
   templateStr = templateStr.replace(/:(\w+)="([^"]*)"/g, (match, $1, $2) => {
     if (/false|true|[0-9]+/.test($2)) {
       return `:${$1}="${$2}"`;
@@ -28,16 +29,34 @@ export function genTemplateStr(pageConfig: PageConfig) {
   return templateStr;
 }
 
-export function compileToFunction(pageConfig: PageConfig, templateStr: string) {
-  const code = genJsStr(pageConfig, templateStr)
-  return new Function(
+export function compileToOptions(pageConfig: PageConfig, templateStr: string) {
+  const code = genJsStr(pageConfig, templateStr);
+
+  const options = new Function(
     ` return {
       ${code}
-    }`)
+    }`)();
+
+  return options;
 }
 
-export function genJsStr(pageConfig: PageConfig, templateStr?: string) {
+export function genJsStr(pageConfig: PageConfig, templateStr: string) {
+  const varStr = dealTemplateVar(templateStr);
   const jsStr = `${pageConfig.jsCode}`;
+  const options = new Function(
+    ` return {
+      ${jsStr}
+    }`)();
+
+  let data = options.data();
+  data = {
+    ...data,
+    ...varStr
+  }
+  options.data = function() {
+    return data
+  }
+
   return jsStr;
 }
 
@@ -49,18 +68,20 @@ export function genCssStr(pageConfig: PageConfig) {
   return cssCode;
 }
 
-
-export function dealTemplateVar(templateStr: string) {
+function dealTemplateVar(templateStr: string) {
   const pattern = /:(\w+)="([^"]*)"/g;
   let ret,
       result = [];
   while((ret = pattern.exec(templateStr)) != null) {
     if (/false|true|[0-9]+/.test(ret[2])) continue;
     result.push(ret[1]);   
-  }
-  return result.map((key: string) => {
-    return `${key}: '',`;
-  }).join('');
+  };
+  const valMap:any = {};
+  result.forEach((key: string) => {
+    valMap[key] = ''
+  });
+ 
+  return valMap;
 }
 
 function genStyleCode(configs: IComponentConfig[]) {
@@ -149,18 +170,25 @@ function genPropsOrAttrsStr(obj: any, type: 'attrs' | 'props' | 'style' | 'actio
     if (type === 'attrs' && key === 'config-id') return;
 
     if (type === 'attrs') {
+
       str += ` ${key}="${value}"`;
+
     } else if (type === 'props') {
+
       // TODO 待优化解决
       if (compName === 'el-input' && key==='value') {
         str += ` v-model="value"`;
       } else {
         str += ` :${key}="${value}"`;
       }
+
     } else if (type === 'action') {
         str += ` @${key}="${value}"`;
+
     } else if (type === 'style'){
+
       str += `${dumpToHyphenate(key)}:${value};`;
+
     } 
   })
   return str;
