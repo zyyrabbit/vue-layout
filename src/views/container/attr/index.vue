@@ -5,7 +5,8 @@
     <el-col v-if="selectConfig" :span="20">
       
       <h3 class="leaf-attrs--title">{{selectConfig.name}}</h3>
-      <el-form>
+
+      <el-form v-if="filterProps.length">
         <el-form-item>属性编辑</el-form-item>
         <!-- props -->
         <el-form-item v-for="key of filterProps" :key="key">
@@ -30,6 +31,16 @@
         </el-form-item>
       </el-form>
 
+      <!-- 表单校验 -->
+      <el-form v-if="rule">
+        <el-form-item>表单校验</el-form-item>
+         <el-form-item v-for="key of ruleKeys" :key="key">
+          <el-checkbox-group v-model="rule.checked">
+            <el-checkbox :label="key"></el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>  
+      </el-form>
+
       <el-form>
         <el-form-item>样式编辑</el-form-item>
         <!-- class -->
@@ -43,8 +54,8 @@
         </el-form-item>
       </el-form>
 
-      <el-form>
-        <el-form-item v-if="selectConfig.action">
+      <el-form v-if="selectConfig.action">
+        <el-form-item>
           <div>动作</div>
           <action :select-config="selectConfig">></action>
         </el-form-item>
@@ -104,6 +115,14 @@ export default class Attrs extends Vue {
       }
     })
     return attrs;
+  }
+
+  get ruleKeys() {
+    return this.rule && Object.keys(this.rule.map)
+  }
+  // rules
+  get rule() {
+    return this.selectConfig.rule
   }
 
   // 处理prop

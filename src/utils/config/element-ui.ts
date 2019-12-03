@@ -66,16 +66,22 @@ const formElement: IComponentConfig[] = [
     parentName: 'el-form',
     parent: null,
     droppable: true,
+    rule: {
+      map: {
+        reuqire: "{ required: true, message: '年龄不能为空'}", 
+      },
+      checked: [],
+    },
     placeholder: 'div',
     props: {
-      required: false,
       'show-message': true,
       'inline-message': false,
     },
     attrs: {
-      'label-width': '',
-      label: '',
+      'label-width': '100px',
+      label: '标题',
       size: '',
+      prop: 'key'
     },
     'class': 'leaf-layout',
     children: []
@@ -166,7 +172,7 @@ const data = [
     placeholder: 'div',
     attrs: {
       prop: '',
-      label: '',
+      label: '标题',
       width: '',
     }
   },

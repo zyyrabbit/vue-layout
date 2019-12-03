@@ -5,6 +5,7 @@ export type Reg = { [index: string]: RegExp };
 
 export interface IComponentConfig {
   name: string; // 组件名称
+  rule?: index; // 表单校验
   id?: string;
   type?: string;
   el?: HTMLElement; // 组件关联的元素

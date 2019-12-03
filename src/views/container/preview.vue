@@ -25,7 +25,6 @@ export default class Preview extends Vue {
     
     // 加载样式
     this.addUserStyle();
-    
     const templateStr = genTemplateStr(this.pageConfig);
     const compiled = vueCompile.compileToFunctions(templateStr);
     
@@ -33,9 +32,10 @@ export default class Preview extends Vue {
     if (this.pageConfig.jsCode) {
       const genOptions = compileToFunction(this.pageConfig, templateStr);
       _options = genOptions();
+      debugger
     }
    
-    let options: any = {
+    const options: any = {
       el: this.$refs.preview,
       render: compiled.render,
       staticRenderFns: compiled.staticRenderFns,
@@ -43,13 +43,12 @@ export default class Preview extends Vue {
     };
 
     new Vue(options);
-   
-
-   // window.open('http://localhost:3000/dist/index.html')
+  
   }
 
   private addUserStyle() {
     const cssCode = genCssStr(this.pageConfig)
+
     if (!cssCode) return;
     let style: any = document.getElementById('custom-layout');
     if (!style) {

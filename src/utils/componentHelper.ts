@@ -62,7 +62,7 @@ export const configHanlder = function(config: ConfigOrNull, parentConfig: Config
   // 删除占位标志
   config.placeholder && delete config.placeholder;
   // 利用闭包--需要确定一下闭包是否泄漏
-  let listener = {
+  const listener = {
     drop: (e: DragEvent) => {
       const childConfig = handleDropEvent(e);
       configHanlder(childConfig, config);

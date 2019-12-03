@@ -14,7 +14,10 @@ const state: index = {
     jsCode: `
       data() {
         return {
-          value: ''
+          value: '',
+          model: {
+            key: ''
+          }
         }
       },
 

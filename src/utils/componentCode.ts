@@ -5,12 +5,12 @@ import {
   deepCopy,
   dumpToHyphenate,
   
-} from  '@/utils'
+} from  '@/utils';
 
 import {
   PageConfig,
   IComponentConfig,
-} from '@/utils/index.d'
+} from '@/utils/index.d';
 
 export function genTemplateStr(pageConfig: PageConfig) {
   let templateStr = `
@@ -31,8 +31,7 @@ export function genTemplateStr(pageConfig: PageConfig) {
 export function compileToFunction(pageConfig: PageConfig, templateStr: string) {
   const code = genJsStr(pageConfig, templateStr)
   return new Function(
-    `
-    return {
+    ` return {
       ${code}
     }`)
 }
@@ -68,11 +67,11 @@ function genStyleCode(configs: IComponentConfig[]) {
   let codeStr = '';
   configs.forEach((config: IComponentConfig) => {
 
-    let { name, style } = config;
-  
+    let { style } = config;
+
     // 处理class
-    if (style) {
-      codeStr += `.${config.class} { ${genPropsOrAttrsStr(style, 'style')} }`;
+    if (style && config.class) {
+      codeStr += `.${config.class.split(' ')[0]} { ${genPropsOrAttrsStr(style, 'style')} }`;
     }
 
     if (config.children) {
@@ -96,16 +95,23 @@ function genTemplateCode(configs: IComponentConfig[]) {
       config = dealHtmlElement(config);
     }
 
-    let { name, attrs, props, action } = config;
+    const { 
+      name, 
+      attrs, 
+      props, 
+      action,
+      rule,
+    } = config;
     let attrStr = attrs ? genPropsOrAttrsStr(attrs, 'attrs') : '';
-    let propsStr = props ? genPropsOrAttrsStr(props, 'props', name) : '';
-    let actionStr = action ?  genPropsOrAttrsStr(action.map, 'action') : '';
+    const propsStr = props ? genPropsOrAttrsStr(props, 'props', name) : '';
+    const actionStr = action ? genPropsOrAttrsStr(action.map, 'action') : '';
+    const ruleStr = rule ? genRuleStr(rule) : '';
     // 处理class
     if (config.class) {
       attrStr += ` class="${config.class.split(',').join(' ')}"`;
     }
     
-    codeStr += `<${name}${propsStr}${actionStr}${attrStr}>`;
+    codeStr += `<${name}${propsStr}${ruleStr}${actionStr}${attrStr}>`;
 
     if (config.children) {
       codeStr += genTemplateCode(config.children as IComponentConfig[]);
@@ -114,6 +120,25 @@ function genTemplateCode(configs: IComponentConfig[]) {
     codeStr += `</${name}>`
   })
   return codeStr;
+}
+
+// 生成表单规则
+
+function genRuleStr(rule: any) {
+  const {
+    checked,
+    map
+  } = rule;
+  let ruleStr = ':rules = "[';
+
+  checked.forEach((key: string) => {
+    
+    ruleStr += `${map[key]},`
+  })
+
+  ruleStr += ']"';
+  
+  return ruleStr;
 }
 
 // 代码生成
